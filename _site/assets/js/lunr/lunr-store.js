@@ -4,4 +4,10 @@ var store = [{
         "tags": ["dev_log","java"],
         "url": "http://localhost:4000/dev_log/daily-dev-log/",
         "teaser": null
+      },{
+        "title": "kotlin study day.1",
+        "excerpt":"Kotiln study Functions Entry Poin kotlin 애플리케이션은 main 함수에서 시작합니다. fun main(){ println(\"hello world\") } Funtion kotiln 에서 함수 선언은 fun 키워드를 사용합니다. fun double(x: Int): Int{ return 2 * x } val result = double(2) parameter 함수의 매개변수는 와 반환 값은 : 를 이용하여 타입을 지정합니다. 만약 반환값으로 :...","categories": ["study"],
+        "tags": ["kotlin"],
+        "url": "http://localhost:4000/study/kotlin-day1/",
+        "teaser": null
       }]
