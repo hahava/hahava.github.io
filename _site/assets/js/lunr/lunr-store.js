@@ -1,8 +1,8 @@
 var store = [{
         "title": "2020.03.30-개발일지",
-        "excerpt":"주제 Scanner 또는 System.out.println 을 유틸 함수로 래핑하여 중복을 제거 목표 유틸클래스를 작성하여 해당 메서드에서 유효성검사 등의 기능을 제공 고민한 내용 BufferdReader close() 호출 후 다시 객체를 생성하려 하면 java.io.IOException: Stream closed 에러 발생 알게된 내용 System.in System 클래스의 in 인스턴스의 설명은 아래와 같이 주석으로 잘 되어 있음 /** *...","categories": ["dev_log"],
+        "excerpt":"System stream 객체를 close() 했을 때 발생하는 문제점 리팩토링하면서 가장 먼저 눈에 띄는것은 Scanner와 System.out.println 이었습니다. 주로 Web MVC로 개발하다 보니 콘솔 환경에서 입.출력을 구현할 일도 없거니와, 만약 구현한다 해도 Logger를 이용했기 때문입니다. 더욱이 알고리즘등을 공부하면서 일반적인 입출력보다 속도나 성능면에서 문제가 있는 것을 알고 있는데, 개선하지 않는 것은 안 좋은...","categories": ["dev_log"],
         "tags": ["dev_log","java"],
-        "url": "http://localhost:4000/dev_log/daily-dev-log20200330/",
+        "url": "http://localhost:4000/dev_log/20200330/",
         "teaser": null
       },{
         "title": "kotlin study day.1",
@@ -18,8 +18,8 @@ var store = [{
         "teaser": null
       },{
         "title": "2020.04.06-개발일지",
-        "excerpt":"주제 어떻게 하면 switch 지옥에서 벗어날 수 있을까? 이게 뭐하는 짓이람 Commnad Line user Interface 환경에서 View 와 사용자 input를 어떻게 해야 연관성있게 가져갈 수 있을까? 이렇게 하면 메뉴를 수정할 때 마다 input 관련해서 전부 수정해야 한다. 목표 코드를 깔끔하게… 수정하기 쉽게 …. 고민한 내용 디자인 패턴을 이용하여 개발 기본적으로...","categories": ["dev_log"],
+        "excerpt":"어떻게 하면 switch 지옥에서 벗어날 수 있을까? 사용자의 입력을 직접적으로 받아야 하기에 다른 대학생들이 하듯 자연스럽게 switch 문을 사용해서 구현했습니다. 문제는 case가 너무 많아 수정하기 어렵고 가독성 또한 많이 떨어진다는 점 입니다. /// case 1: MyuserDAO myuserDAO = MyuserDAO.getInstance(); myuserDAO.list(); break; case 2: MovieDAO movieDAO = MovieDAO.getInstance(); movieDAO.movieMenu(); break; case...","categories": ["dev_log"],
         "tags": ["dev_log","java"],
-        "url": "http://localhost:4000/dev_log/daily-dev-log20200406/",
+        "url": "http://localhost:4000/dev_log/devlog-20200406/",
         "teaser": null
       }]
