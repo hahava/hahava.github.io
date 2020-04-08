@@ -22,4 +22,10 @@ var store = [{
         "tags": ["dev_log","java"],
         "url": "http://localhost:4000/dev_log/devlog-20200406/",
         "teaser": null
+      },{
+        "title": "jenv 환경설정",
+        "excerpt":"개발 또는 운영할때 여러가지의 java 버전을 사용해야 하는 경우가 있습니다. python의 venv 같은 것이 없을까 찾아보던중 jenv 를 알게되어 관련 내용을 정리합니다. Installation Mac OS X $ brew install jenv Mac os 에서는 기본적으로 homebrew 를 통해 설치할 수 있습니다. Bash $ echo 'export PATH=\"$HOME/.jenv/bin:$PATH\"' &gt;&gt; ~/.bash_profile $ echo 'eval...","categories": ["post"],
+        "tags": ["java"],
+        "url": "http://localhost:4000/post/jenv/",
+        "teaser": null
       }]

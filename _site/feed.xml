@@ -1,4 +1,82 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-07T21:42:31+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">2020.04.06-개발일지</title><link href="http://localhost:4000/dev_log/devlog-20200406/" rel="alternate" type="text/html" title="2020.04.06-개발일지" /><published>2020-04-06T00:00:00+09:00</published><updated>2020-04-06T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/devlog-20200406</id><content type="html" xml:base="http://localhost:4000/dev_log/devlog-20200406/">&lt;h2 id=&quot;어떻게-하면-switch-지옥에서-벗어날-수-있을까&quot;&gt;어떻게 하면 switch 지옥에서 벗어날 수 있을까?&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-08T19:56:35+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">jenv 환경설정</title><link href="http://localhost:4000/post/jenv/" rel="alternate" type="text/html" title="jenv 환경설정" /><published>2020-04-08T00:00:00+09:00</published><updated>2020-04-08T00:00:00+09:00</updated><id>http://localhost:4000/post/jenv</id><content type="html" xml:base="http://localhost:4000/post/jenv/">&lt;p&gt;개발 또는 운영할때 여러가지의 java 버전을 사용해야 하는 경우가 있습니다. python의 &lt;code class=&quot;highlighter-rouge&quot;&gt;venv&lt;/code&gt; 같은 것이 없을까 찾아보던중 &lt;code class=&quot;highlighter-rouge&quot;&gt;jenv&lt;/code&gt; 를 알게되어 관련 내용을 정리합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;installation&quot;&gt;Installation&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Mac OS X&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;jenv
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Mac os 에서는 기본적으로 homebrew 를 통해 설치할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Bash&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'export PATH=&quot;$HOME/.jenv/bin:$PATH&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.bash_profile
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'eval &quot;$(jenv init -)&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.bash_profile
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.bash_profile
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Zsh&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'export PATH=&quot;$HOME/.jenv/bin:$PATH&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.zshrc
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'eval &quot;$(jenv init -)&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.zshrc
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.zshrc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;터미널 쉘 종류 별로 설정합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;command&quot;&gt;Command&lt;/h2&gt;
+
+&lt;p&gt;jenv는 설치된 여러가지 버전의 java를 편리하게 사용할 수 있게 해주는 툴입니다. 따라서 설치는 직접적으로 하고 alias처럼 사용합니다. 아래는 자주 사용하는 명령어 입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# java 추가&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jenv add &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;java_경로&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# java 추가된 버전&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jenv versions
+
+&lt;span class=&quot;c&quot;&gt;# java local setting&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jenv &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;1.8.00
+
+&lt;span class=&quot;c&quot;&gt;# java global setting&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jenv global 1.8.00
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;jenv global&lt;/code&gt; 로 설정했을때, Java 버전이 안바뀔 경우에는 다음과 같은 방법을 사용합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'eval &quot;$(jenv init -)&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; ~/.zshrc &lt;span class=&quot;c&quot;&gt;# bash_profile&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.zshrc &lt;span class=&quot;c&quot;&gt;# bash_profile&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;### 또는 아래 파일을 삭제합니다.&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jenv versions
+  system
+  1.6
+  1.6.0.65
+  1.7
+  1.7.0.80
+&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; 1.8 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;by /Users/user/.jenv/version&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  1.8.0.221
+  12.0
+  12.0.2
+  oracle64-1.6.0.65
+  oracle64-1.7.0.80
+  oracle64-1.8.0.221
+  oracle64-12.0.2
+  
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; /Users/user/.jenv/version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;etc&quot;&gt;Etc.&lt;/h2&gt;
+
+&lt;p&gt;위와 같이 설정하면 java 는 변경이 되나, Maven의 java설정이 안되는 경우가 있습니다. 이럴때는 플러그인을 추가합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jenv enable-plugin maven
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jenv enable-plugin &lt;span class=&quot;nb&quot;&gt;export&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;추가 후 터미널을 재시작해야 설정됩니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><category term="java" /><summary type="html">java의 여러버전을 편하고 빠르게 사용하는 법</summary></entry><entry><title type="html">2020.04.06-개발일지</title><link href="http://localhost:4000/dev_log/devlog-20200406/" rel="alternate" type="text/html" title="2020.04.06-개발일지" /><published>2020-04-06T00:00:00+09:00</published><updated>2020-04-06T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/devlog-20200406</id><content type="html" xml:base="http://localhost:4000/dev_log/devlog-20200406/">&lt;h2 id=&quot;어떻게-하면-switch-지옥에서-벗어날-수-있을까&quot;&gt;어떻게 하면 switch 지옥에서 벗어날 수 있을까?&lt;/h2&gt;
 
 &lt;p&gt;사용자의 입력을 직접적으로 받아야 하기에 다른 대학생들이 하듯 자연스럽게 &lt;code class=&quot;highlighter-rouge&quot;&gt;switch&lt;/code&gt; 문을 사용해서 구현했습니다. 문제는 case가 너무 많아 수정하기 어렵고 가독성 또한 많이 떨어진다는 점 입니다.&lt;/p&gt;
 
