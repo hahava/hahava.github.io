@@ -28,4 +28,10 @@ var store = [{
         "tags": ["java"],
         "url": "http://localhost:4000/post/jenv/",
         "teaser": null
+      },{
+        "title": "docker study 01",
+        "excerpt":"Docker 는 … Docker란 컨테이너형 가상화 기술을 구현하기 위한 상주 애플리케이션과 이 애플리케이션을 조작하기 위한 도구입니다. 애플리케이션 배포에 특화되어 있기 때문에 애플리케이션 개발 및 운영을 컨테이너 중심으로 할 수 있습니. 로컬환경에 도커만 설치하면 몇 줄짜리 구성 파일과 명령어 한줄로 애플리케이션이나 미들웨어가 이미 갖춰진 테스트용 가상환경을 빠르게 구축 할 수 있습니다....","categories": ["study"],
+        "tags": ["docker"],
+        "url": "http://localhost:4000/study/docker_study_01/",
+        "teaser": null
       }]
