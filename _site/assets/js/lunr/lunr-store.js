@@ -34,4 +34,10 @@ var store = [{
         "tags": ["docker"],
         "url": "http://localhost:4000/study/docker_study_01/",
         "teaser": null
+      },{
+        "title": "docker study 02",
+        "excerpt":"컨테이너와 이미지 도커 이미지 : 도컨 컨테이너를 구성하는 파일 시스템과 실행할 애플리케이션 설정을 하나로 합친 것으로, 컨테이너를 생성하는 템플릿 역할을 합니다. 도커 컨테이너 : 도커 이미지를 기반으로 생성되며, 파일 시스템과 애플리케이션이 구체화돼 실행되는 상태. (일종의 인스턴스라고 보면 됩니다.) 도커 이미지 하나로 여래개의 컨테이너를 생성 할 수 있습니다. DockerFile DockerFile 은...","categories": ["study"],
+        "tags": ["docker"],
+        "url": "http://localhost:4000/study/docker_study_02/",
+        "teaser": null
       }]
