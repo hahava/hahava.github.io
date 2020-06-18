@@ -52,4 +52,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/maven/maven_profile-20200608/",
         "teaser": null
+      },{
+        "title": "Spring validator",
+        "excerpt":"Spring 은 JSR-303을 지원합니다. JSR-303 은 Java EE 와 Java SE에서 Bean Validation 을 지원하는 스펙입니다. Spring mvc 에서는 Controller 레벨에서의 사용자 입력에 대해 DataBinding 시점에서 validation 을 지원합니다. DataBinding이란 데이터를 객체에 맵핑하는 작업입니다. 사용자의 입력값을 동적으로 도메인 모델에 연결하는 역할을 합니다. Validator 와 DataBinder 는 validation 패키지에 선언되어 있습니다....","categories": ["spring"],
+        "tags": [],
+        "url": "http://localhost:4000/spring/spring_validator/",
+        "teaser": null
       }]
