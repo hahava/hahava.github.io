@@ -58,4 +58,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/spring/spring_validator/",
         "teaser": null
+      },{
+        "title": "kotlin study day3",
+        "excerpt":"예외처리 kotlin의 예외처리 방식은 java 와 매우 유사합니다. 예외를 던지는 방법은 throw 키워드를 사용하며, new 를 사용하지 않습니다. val input = \"10\" if (input is String) {    throw TypeCastException(\"Not allowed string.\") } /// val stream try { stream = connection.inputStream()  stream.read() } catch (e: StreamCorruptedException){  stream = null }...","categories": ["kotlin"],
+        "tags": [],
+        "url": "http://localhost:4000/kotlin/kotlin-day3/",
+        "teaser": null
       }]

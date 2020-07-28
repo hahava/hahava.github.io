@@ -1,4 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-18T11:40:30+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">Spring validator</title><link href="http://localhost:4000/spring/spring_validator/" rel="alternate" type="text/html" title="Spring validator" /><published>2020-06-18T00:00:00+09:00</published><updated>2020-06-18T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring_validator</id><content type="html" xml:base="http://localhost:4000/spring/spring_validator/">&lt;p&gt;Spring 은 JSR-303을 지원합니다. JSR-303 은 Java EE 와 Java SE에서 Bean Validation 을 지원하는 스펙입니다. Spring mvc 에서는 &lt;code class=&quot;highlighter-rouge&quot;&gt;Controller&lt;/code&gt; 레벨에서의 사용자 입력에 대해 &lt;code class=&quot;highlighter-rouge&quot;&gt;DataBinding&lt;/code&gt; 시점에서 validation 을 지원합니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-07-28T17:31:30+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">kotlin study day3</title><link href="http://localhost:4000/kotlin/kotlin-day3/" rel="alternate" type="text/html" title="kotlin study day3" /><published>2020-07-28T00:00:00+09:00</published><updated>2020-07-28T00:00:00+09:00</updated><id>http://localhost:4000/kotlin/kotlin-day3</id><content type="html" xml:base="http://localhost:4000/kotlin/kotlin-day3/">&lt;h2 id=&quot;예외처리&quot;&gt;예외처리&lt;/h2&gt;
+
+&lt;p&gt;kotlin의 예외처리 방식은 java 와 매우 유사합니다. 예외를 던지는 방법은 &lt;code class=&quot;highlighter-rouge&quot;&gt;throw&lt;/code&gt; 키워드를 사용하며, &lt;code class=&quot;highlighter-rouge&quot;&gt;new&lt;/code&gt; 를 사용하지 않습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;10&quot;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TypeCastException&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Not allowed string.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;///&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;stream&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;stream&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;inputStream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;StreamCorruptedException&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stream&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;null&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;finally&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;java 에서의 차이점은 kotlin에서는 함수 뒤에 &lt;code class=&quot;highlighter-rouge&quot;&gt;thows&lt;/code&gt; 키워드를 붙이지 않습니다. java에서는 체크 예외를 명시적으로 처리해야 했습니다. 따라서 stream 등을 사용 시 명시적으로 예외를 처리하도록 강제 됐으나, 클라이언트에서 취할수 있는 의미 있는 동작은 없었습니다. 그러나 kotlin에서는 체크와 언체크를 명시적으로 구분하지 않습니다. kotlin을 사용하면 불필요한 예외처리로 인해 스트레스 받지 않아도 됩니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;표현식&quot;&gt;표현식&lt;/h2&gt;
+
+&lt;p&gt;kotlin은 표현식(exression)을 지원합니다. 일반적으로 java에서는 연산을 제외한 나머지는 문(statement) 였습니다. 표현식은 값을 만들며 다른식의 하위 요소로 계산에 참여할 수 있는 반면 문은 자신을 둘러싸고 있는 가장 안쪽 볼록의 최상위 요소로 존재하면 값을 만들어내지 못한다는 차이가 있습니다. If, try-catch 등에서 사용가능하며 심지어 함수 단위에서도 지원을 합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;if 표현식&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;17&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;middle school&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;high school&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;adult&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;함수 표현식&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getKoreanStyleName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;${firstName} ${lastName}&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;예외처리 표현식&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt; &lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt; &lt;/span&gt; &lt;span class=&quot;err&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">예외처리</summary></entry><entry><title type="html">Spring validator</title><link href="http://localhost:4000/spring/spring_validator/" rel="alternate" type="text/html" title="Spring validator" /><published>2020-06-18T00:00:00+09:00</published><updated>2020-06-18T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring_validator</id><content type="html" xml:base="http://localhost:4000/spring/spring_validator/">&lt;p&gt;Spring 은 JSR-303을 지원합니다. JSR-303 은 Java EE 와 Java SE에서 Bean Validation 을 지원하는 스펙입니다. Spring mvc 에서는 &lt;code class=&quot;highlighter-rouge&quot;&gt;Controller&lt;/code&gt; 레벨에서의 사용자 입력에 대해 &lt;code class=&quot;highlighter-rouge&quot;&gt;DataBinding&lt;/code&gt; 시점에서 validation 을 지원합니다.&lt;/p&gt;
 
 &lt;p&gt;DataBinding이란 데이터를 객체에 맵핑하는 작업입니다. 사용자의 입력값을 동적으로 도메인 모델에 연결하는 역할을 합니다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Validator&lt;/code&gt; 와 &lt;code class=&quot;highlighter-rouge&quot;&gt;DataBinder&lt;/code&gt; 는 &lt;code class=&quot;highlighter-rouge&quot;&gt;validation&lt;/code&gt; 패키지에 선언되어 있습니다. spring mvc에선 &lt;code class=&quot;highlighter-rouge&quot;&gt;controller&lt;/code&gt; 단위에서 databind을 진행하며 이때 validator를 자유롭게 사용가능합니다.&lt;/p&gt;
 
@@ -899,118 +948,4 @@ circleci/mysql        MySQL is a widely used, open-source relation…   19
 
 &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;hahava&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;kim&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;mj&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><category term="kotlin" /><summary type="html">Functions</summary></entry><entry><title type="html">2020.03.30-개발일지</title><link href="http://localhost:4000/dev_log/20200330/" rel="alternate" type="text/html" title="2020.03.30-개발일지" /><published>2020-03-30T00:00:00+09:00</published><updated>2020-03-30T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/20200330</id><content type="html" xml:base="http://localhost:4000/dev_log/20200330/">&lt;h2 id=&quot;system-stream-객체를-close-했을-때-발생하는-문제점&quot;&gt;System stream 객체를 close() 했을 때 발생하는 문제점&lt;/h2&gt;
-
-&lt;p&gt;리팩토링하면서 가장 먼저 눈에 띄는것은 &lt;code class=&quot;highlighter-rouge&quot;&gt;Scanner&lt;/code&gt;와 &lt;code class=&quot;highlighter-rouge&quot;&gt;System.out.println&lt;/code&gt; 이었습니다. 주로 Web MVC로 개발하다 보니 콘솔 환경에서 입.출력을 구현할 일도 없거니와, 만약 구현한다 해도 &lt;code class=&quot;highlighter-rouge&quot;&gt;Logger&lt;/code&gt;를 이용했기 때문입니다. 더욱이 알고리즘등을 공부하면서 일반적인 입출력보다 속도나 성능면에서 문제가 있는 것을 알고 있는데, 개선하지 않는 것은 안 좋은 방향이라 생각했습니다.&lt;/p&gt;
-
-&lt;p&gt;문제를 해결하기 위해 유틸 클래스를 작성 후 입력과 출력을 담당하는 메서드를 작성했습니다. 이때 &lt;code class=&quot;highlighter-rouge&quot;&gt;BufferdReader&lt;/code&gt; 와&lt;code class=&quot;highlighter-rouge&quot;&gt;BufferdWriter&lt;/code&gt; 를 사용하였습니다. I/O Stream은 항상 close를 해야 한다고 알고 있기에 자연스럽게 메서드 마지막 부분에 &lt;code class=&quot;highlighter-rouge&quot;&gt;close&lt;/code&gt; 를 했는데 여기서 문제가 발생했습니다.  첫번째 호출에서는 문제가 없으나 두번째부터 다시 객체를 생성하려 하면 &lt;code class=&quot;highlighter-rouge&quot;&gt;java.io.IOException: Stream closed&lt;/code&gt; 에러가 발생 했습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;알게된-내용&quot;&gt;알게된 내용&lt;/h2&gt;
-
-&lt;h3 id=&quot;1-systemout&quot;&gt;&lt;strong&gt;1 .System.out&lt;/strong&gt;&lt;/h3&gt;
-
-&lt;p&gt;System 클래스의 &lt;code class=&quot;highlighter-rouge&quot;&gt;out&lt;/code&gt; 인스턴스 설명은 아래와 같이 주석으로 잘 되어 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/**
-* The &quot;standard&quot; output stream. This stream is already
-* open and ready to accept output data. Typically this stream
-* corresponds to display output or another output destination
-* specified by the host environment or user.
-* &amp;lt;p&amp;gt;
-* For simple stand-alone Java applications, a typical way to write
-* a line of output data is:
-* &amp;lt;blockquote&amp;gt;&amp;lt;pre&amp;gt;
-*     System.out.println(data)
-* &amp;lt;/pre&amp;gt;&amp;lt;/blockquote&amp;gt;
-* &amp;lt;p&amp;gt;
-* See the &amp;lt;code&amp;gt;println&amp;lt;/code&amp;gt; methods in class &amp;lt;code&amp;gt;PrintStream&amp;lt;/code&amp;gt;.
-*/&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PrintStream&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;주석 내용은 ‘스트림은 프로그램 실행 시에 이미 열려있으며 데이터를 출력할 준비가 되어 있음’  이라 되어 있습니다. 당연하게도? close 를 하면 &lt;code class=&quot;highlighter-rouge&quot;&gt;Console&lt;/code&gt; 관련 스트림은 연결이 해제되고 재사용할 수 없게 됩니다. (out 역시 마찬가지 입니다.)&lt;/p&gt;
-
-&lt;h3 id=&quot;2-java-에서-사용자-입력을-받는-3가지-방법&quot;&gt;2. Java 에서 사용자 입력을 받는 3가지 방법&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;BufferdReader
-    &lt;ul&gt;
-      &lt;li&gt;Java 1.1 부터 사용&lt;/li&gt;
-      &lt;li&gt;명시적인 에러처리 필요&lt;/li&gt;
-      &lt;li&gt;속도가 매우빠름&lt;/li&gt;
-      &lt;li&gt;입력에 대한 validation을 직접 구현해야 함&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Scanner
-    &lt;ul&gt;
-      &lt;li&gt;Java 1.5 부터 생김&lt;/li&gt;
-      &lt;li&gt;명시적인 예외처릴 할 필요 없음&lt;/li&gt;
-      &lt;li&gt;line, token 별로 read 하는 등의 다양한 기능을 제공&lt;/li&gt;
-      &lt;li&gt;속도가 느림&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Console
-    &lt;ul&gt;
-      &lt;li&gt;Java 1.6 부터 사용&lt;/li&gt;
-      &lt;li&gt;명시적인 예외처리가 필요 없음&lt;/li&gt;
-      &lt;li&gt;Scanner와 BufferdReader의 장점을 모두 가져옴 (암호 읽기 *** 기능도 제공함)&lt;/li&gt;
-      &lt;li&gt;에디터에서 안되는 경우가 있음. NullPointerException 발생. Console 객체와 에디터의 콘솔이 매칭이 안되서 발생한 문제&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;상황에-맞게-쓰자&quot;&gt;상황에 맞게 쓰자&lt;/h2&gt;
-
-&lt;p&gt;다양한 상황속에서 용도에 따라 분리해서 사용하는 것이 좋습니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;빠른 속도가 필요한 경우 -&amp;gt; BufferdReader&lt;/li&gt;
-  &lt;li&gt;암호, 개인정보등 추가적인 처리가 필요할 경우 -&amp;gt; Console&lt;/li&gt;
-  &lt;li&gt;형타입, 정규식 표현등을 그대로 사용하고 싶을 때 -&amp;gt; Scanner&lt;/li&gt;
-  &lt;li&gt;Thread-safe 하게 사용해야 하는 경우 -&amp;gt; Console 또는 BufferdReader&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;이번에는 아래와 같이 작성 후, 프로그램 종료직전 &lt;code class=&quot;highlighter-rouge&quot;&gt;close()&lt;/code&gt; 호출 하기로 결정했습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ConsoleUtil&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-	&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BufferedReader&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BUFFERED_READER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BufferedReader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;InputStreamReader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
-	&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BufferedWriter&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BUFFERED_WRITER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BufferedWriter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OutputStreamWriter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
-	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;HORIZONTAL_RULE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;=================================&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;readString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printLn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BUFFERED_READER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;readLine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;readInt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printLn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parseInt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;success&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;success&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;BUFFERED_READER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;readLine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;parseInt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;parseInt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;success&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-			&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;NumberFormatException&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-				&lt;span class=&quot;n&quot;&gt;printLn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;숫자만 입력해주세요!&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-			&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parseInt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;printLn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;no&quot;&gt;BUFFERED_WRITER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;no&quot;&gt;BUFFERED_WRITER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;newLine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-		&lt;span class=&quot;no&quot;&gt;BUFFERED_WRITER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;flush&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;no&quot;&gt;BUFFERED_READER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-		&lt;span class=&quot;no&quot;&gt;BUFFERED_WRITER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Stream에 대한 이해가 많이 부족한 것 같다고 느꼈습니다. 해당 내용을 정리하는 시간을 갖는다면 좋을 것 같습니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><category term="dev_log" /><category term="java" /><summary type="html">System stream 객체를 close() 했을 때 발생하는 문제점</summary></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><category term="kotlin" /><summary type="html">Functions</summary></entry></feed>
