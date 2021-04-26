@@ -3,7 +3,7 @@ title: "docker study 01"
 excerpt: "docker의 특징 및 장단점"
 
 categories:
- - study
+ - docker
 tags:
  - docker
 ---

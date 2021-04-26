@@ -3,7 +3,7 @@ title: "docker study 02"
 excerpt: "container로 애플리케이션 실행하기"
 
 categories:
- - study
+ - docker
 tags:
  - docker
 
