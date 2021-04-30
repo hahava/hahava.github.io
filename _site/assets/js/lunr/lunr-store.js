@@ -64,4 +64,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/kotlin/kotlin-day3/",
         "teaser": null
+      },{
+        "title": "2021.04.30-개발일지",
+        "excerpt":"회사에서 업무중 ie11에서 정상적으로 로직이 처리되지 않는다는 연락을 받았습니다. chrome에선 정상적으로 실행됐기에 단순히 폴리필 문제라고 생각했지만, 이미 babel 정상적으로 작동되고 있었습니다. 혹시나 싶어 해당 기능을 safari에서 테스트 해본결과 동일한 문제가 발생하여 라인별 로깅을 통해 문제를 파악하였습니다. 브라우저별 date 처리 방식 확인결과 서버에서 전송한 날짜를 비교할때 chrome과 다른 브라우저간의 처리방식에 있어...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/js-compatibility-for-date/",
+        "teaser": null
       }]
