@@ -53,10 +53,10 @@ var store = [{
         "url": "http://localhost:4000/env/maven_profile-20200608/",
         "teaser": null
       },{
-        "title": "http status code 정리",
-        "excerpt":"http status code  는 http 요청의 성공여부를 가르킵니다. 5개의 그룹으로 분류되어 있으며, 각각의 설명은 아래와 같습니다.      Informational responses (100–199),   Successful responses (200–299),   Redirects (300–399),   Client errors (400–499),   and Server errors (500–599)   Informational responses   ","categories": ["http"],
+        "title": "Spring validator",
+        "excerpt":"Spring 은 JSR-303을 지원합니다. JSR-303 은 Java EE 와 Java SE에서 Bean Validation 을 지원하는 스펙입니다. Spring mvc 에서는 Controller 레벨에서의 사용자 입력에 대해 DataBinding 시점에서 validation 을 지원합니다. DataBinding이란 데이터를 객체에 맵핑하는 작업입니다. 사용자의 입력값을 동적으로 도메인 모델에 연결하는 역할을 합니다. Validator 와 DataBinder 는 validation 패키지에 선언되어 있습니다....","categories": ["spring"],
         "tags": [],
-        "url": "http://localhost:4000/http/spring_validator/",
+        "url": "http://localhost:4000/spring/spring_validator/",
         "teaser": null
       },{
         "title": "kotlin study day3",
@@ -69,5 +69,11 @@ var store = [{
         "excerpt":"회사에서 업무중 ie11에서 정상적으로 로직이 처리되지 않는다는 연락을 받았습니다. chrome에선 정상적으로 실행됐기에 단순히 폴리필 문제라고 생각했지만, 이미 babel 정상적으로 작동되고 있었습니다. 혹시나 싶어 해당 기능을 safari에서 테스트 해본결과 동일한 문제가 발생하여 라인별 로깅을 통해 문제를 파악하였습니다. 브라우저별 date 처리 방식 확인결과 서버에서 전송한 날짜를 비교할때 chrome과 다른 브라우저간의 처리방식에 있어...","categories": ["dev_log"],
         "tags": [],
         "url": "http://localhost:4000/dev_log/js-compatibility-for-date/",
+        "teaser": null
+      },{
+        "title": "webclient 정리",
+        "excerpt":"WebClient webclient는 web request를 처리하기 위한 인터페이스입니다. Spring Web Reactive의 모듈의 일부이며, Spring 5 이후 버전에선 Spring RestTemplate(spring 5.3 이후 deprecated 예정)를 대체합니다. WebClient vs RestTemplate 두 모듈의 가장 큰 차이는 동기/비동기 여부입니다. RestTemplate의 경우 모든 요청은 동기적으로 처리됩니다. 따라서 모든 request에 대한 response를 응답받기 전까지 해당 쓰레드는 blocking 되어...","categories": ["spring"],
+        "tags": [],
+        "url": "http://localhost:4000/spring/spring-webclient/",
         "teaser": null
       }]
