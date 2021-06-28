@@ -76,4 +76,16 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/spring/spring-webclient/",
         "teaser": null
+      },{
+        "title": "01-http 기본",
+        "excerpt":"Http는 Hypertext transfer protocol의 약자로 네트워크상의 프로토콜입니다. Resource 웹 서버는 리소스를 관리하고 제공합니다. 리소스는 단순한 정적파일만을 의미하는 것이 아닙니다. 웹에서 제공하는 모든 컨텐츠를 의미합니다. Media Type http는 웹에서 전송되는 객체에 MIME 타입 이라는 데이터 포멧 라벨을 붙입니다. MIME은 이메일 시스템에서 사용하려 개발되었으나 그 편의성 덕분에 http에서도 채용되었습니다. MIME은 사선으로(/) 주...","categories": ["http"],
+        "tags": [],
+        "url": "http://localhost:4000/http/http-basic/",
+        "teaser": null
+      },{
+        "title": "02-http URL",
+        "excerpt":"URL(Uniform Resource Locator)은 인터넷 리소스를 가리키는 표준이름입니다. URL은 브라우저를 통해 정보를 찾는데 필요한 모든것을 제공하며, 원하는 리소스가 어디에 위치하고 어떻게 가져오는지를 정의합니다. URL 문법 URL문법은 스킴에 따라서 달라집니다. 그러나 그것이 전혀 다른 문법을 사용한다는 의미는 아닙니다. 대부분의 URL은 일반 URL 문법을 따르며(스킴://서버위치/경로), 특성상 일부의 차이가 존재합니다. &lt;스킴&gt;://&lt;사용자이름&gt;:&lt;비밀번호&gt;@&lt;호스트&gt;:&lt;포트&gt;/&lt;경로&gt;;&lt;파라미터&gt;?&lt;질의&gt;#&lt;프래그먼트&gt; &lt;!-- ftp --&gt;...","categories": ["http"],
+        "tags": [],
+        "url": "http://localhost:4000/http/http-urls/",
+        "teaser": null
       }]
