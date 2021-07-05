@@ -84,8 +84,14 @@ var store = [{
         "teaser": null
       },{
         "title": "02-http URL",
-        "excerpt":"URL(Uniform Resource Locator)은 인터넷 리소스를 가리키는 표준이름입니다. URL은 브라우저를 통해 정보를 찾는데 필요한 모든것을 제공하며, 원하는 리소스가 어디에 위치하고 어떻게 가져오는지를 정의합니다. URL 문법 URL문법은 스킴에 따라서 달라집니다. 그러나 그것이 전혀 다른 문법을 사용한다는 의미는 아닙니다. 대부분의 URL은 일반 URL 문법을 따르며(스킴://서버위치/경로), 특성상 일부의 차이가 존재합니다. &lt;스킴&gt;://&lt;사용자이름&gt;:&lt;비밀번호&gt;@&lt;호스트&gt;:&lt;포트&gt;/&lt;경로&gt;;&lt;파라미터&gt;?&lt;질의&gt;#&lt;프래그먼트&gt; &lt;!-- ftp --&gt;...","categories": ["http"],
+        "excerpt":"URL(Uniform Resource Locator)은 인터넷 리소스를 가리키는 표준이름입니다. URL은 브라우저를 통해 정보를 찾는데 필요한 모든것을 제공하며, 원하는 리소스가 어디에 위치하고 어떻게 가져오는지를 정의합니다. URL 문법 URL문법은 스킴에 따라서 달라집니다. 그러나 그것이 전혀 다른 문법을 사용한다는 의미는 아닙니다. 대부분의 URL은 일반 URL 문법을 따르며(스킴://서버위치/경로), 특성상 일부의 차이가 존재합니다. &lt;스킴&gt;://&lt;사용자이름&gt;:&lt;비밀번호&gt;@&lt;호스트&gt;:&lt;포트&gt;/&lt;경로&gt;;&lt;파라미터&gt;?&lt;질의&gt;#&lt;프래그먼트&gt; http http://&lt;호스트&gt;:&lt;포트&gt;/&lt;경로&gt;?&lt;질의&gt;#&lt;프래그먼트&gt; http://www.naver.com:80...","categories": ["http"],
         "tags": [],
         "url": "http://localhost:4000/http/http-urls/",
+        "teaser": null
+      },{
+        "title": "03-http status code",
+        "excerpt":"Http 응답 메시지의 상태코드는 크게 다섯가지로 나뉩니다. 상태코드는 세자리 숫자로 100~599 번 까지 정해져 있으며 각각의 의미가 존재합니다. 자주 사용되는 코드 및 설명은 아래와 같습니다. 100 information response 정보성 상태코드로 초기에는 존재하지 않았으나, http/1.1 에서 도입되었습니다. 요청이 정상적으로 수신되었음을 의미하며 프로세스를 계속해서 진행하도록 합니다. 100-Continue 요청의 시작 부분 일부가 받아들여졌으며,...","categories": ["http"],
+        "tags": [],
+        "url": "http://localhost:4000/http/http-status/",
         "teaser": null
       }]
