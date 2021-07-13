@@ -95,6 +95,12 @@ var store = [{
         "url": "http://localhost:4000/http/http-status/",
         "teaser": null
       },{
+        "title": "2021.07.13-리스트를 배열로 바꾸기",
+        "excerpt":"java 에서 리스트를 배열로 또는 배열을 리스트로 변경하는 방법 List to Array List&lt;String&gt; alphabet = List.of(\"a\", \"b\", \"c\"); String[] stringArr = alphabet.toArray(new String[0]); // String[] stringArr = alphabet.stream().toArray(); List&lt;Integer&gt; numbers = List.of(1, 2, 3, 4); Integer numberArr[] = numbers.toArray(new Integer[0]); // int numberArr[] = numbers.stream().mapToInt(i -&gt; i).toArray(); Array to list...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/List-to-array/",
+        "teaser": null
+      },{
         "title": "Spring converter",
         "excerpt":"spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다. @GetMapping(\"/\") public ResponseEntity&lt;Void&gt; stringToInteger(@RequestParam Integer number) { System.out.println(number); return ResponseEntity.ok().build(); } 그러나, http 스펙은 자료형을 정의하지 않기 때문에 @ReequestParam 또는 @PathVariable 등에서 원하는 형태로 변수를 지정하는건 내부에서 String으로 전달된 값을 해당 자료형으로 변환해주기 때문입니다. Converter Spring은...","categories": ["spring-mvc"],
         "tags": [],
