@@ -94,4 +94,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/http/http-status/",
         "teaser": null
+      },{
+        "title": "Spring converter",
+        "excerpt":"spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다. @GetMapping(\"/\") public ResponseEntity&lt;Void&gt; stringToInteger(@RequestParam Integer number) { System.out.println(number); return ResponseEntity.ok().build(); } 그러나, http 스펙은 자료형을 정의하지 않기 때문에 @ReequestParam 또는 @PathVariable 등에서 원하는 형태로 변수를 지정하는건 내부에서 String으로 전달된 값을 해당 자료형으로 변환해주기 때문입니다. Converter Spring은...","categories": ["spring-mvc"],
+        "tags": [],
+        "url": "http://localhost:4000/spring-mvc/spring-type-converter/",
+        "teaser": null
       }]
