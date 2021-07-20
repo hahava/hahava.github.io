@@ -95,6 +95,12 @@ var store = [{
         "url": "http://localhost:4000/http/http-status/",
         "teaser": null
       },{
+        "title": "Servlet and Spring",
+        "excerpt":"Servlet 과 Spring Spring 에서 http request의 흐름은 아래와 같은 형태로 진행됩니다. Container에서 http request가 들어오면 각각의 단계 별로 메서드를 호출합니다. Servlet container Servlet container 는 Servlet 을 실행 및 관리하는 주체 입니다. 스펙이 정해져있으며 tomcat, jeus 등이 있습니다. Servlet servlet은 javax.servlet 패키지에 정의된 인터페이스 입니다. 자바 플랫폼에서 컴포넌트를 기반으로...","categories": ["spring"],
+        "tags": [],
+        "url": "http://localhost:4000/spring/spring-and-servlet/",
+        "teaser": null
+      },{
         "title": "2021.07.13-리스트를 배열로 바꾸기",
         "excerpt":"java 에서 리스트를 배열로 또는 배열을 리스트로 변경하는 방법 List to Array List&lt;String&gt; alphabet = List.of(\"a\", \"b\", \"c\"); String[] stringArr = alphabet.toArray(new String[0]); // String[] stringArr = alphabet.stream().toArray(); List&lt;Integer&gt; numbers = List.of(1, 2, 3, 4); Integer numberArr[] = numbers.toArray(new Integer[0]); // int numberArr[] = numbers.stream().mapToInt(i -&gt; i).toArray(); Array to list...","categories": ["dev_log"],
         "tags": [],
@@ -102,8 +108,14 @@ var store = [{
         "teaser": null
       },{
         "title": "Spring converter",
-        "excerpt":"spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다. @GetMapping(\"/\") public ResponseEntity&lt;Void&gt; stringToInteger(@RequestParam Integer number) { System.out.println(number); return ResponseEntity.ok().build(); } 그러나, http 스펙은 자료형을 정의하지 않기 때문에 @ReequestParam 또는 @PathVariable 등에서 원하는 형태로 변수를 지정하는건 내부에서 String으로 전달된 값을 해당 자료형으로 변환해주기 때문입니다. Converter Spring은...","categories": ["spring-mvc"],
+        "excerpt":"spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다. @GetMapping(\"/\") public ResponseEntity&lt;Void&gt; stringToInteger(@RequestParam Integer number) { System.out.println(number); return ResponseEntity.ok().build(); } 그러나, http 스펙은 자료형을 정의하지 않기 때문에 @ReequestParam 또는 @PathVariable 등에서 원하는 형태로 변수를 지정하는건 내부에서 String으로 전달된 값을 해당 자료형으로 변환해주기 때문입니다. Converter Spring은...","categories": ["spring"],
         "tags": [],
-        "url": "http://localhost:4000/spring-mvc/spring-type-converter/",
+        "url": "http://localhost:4000/spring/spring-type-converter/",
+        "teaser": null
+      },{
+        "title": "filter and interceptor",
+        "excerpt":"filter와 interceptor는 둘 다 공통로직을 처리한다는 특징이 있습니다. 두 기술의 가장 큰 차이점으로는 관리 주체가 다르다는 점 입니다. filter는 servlet에서 제공하는 고유 기능이며 web application에 등록, servlet 은 spring에서 제공하는 기능이며 spring context에 등록됩니다. 따라서 interceptor는 spring의 모든 기능을 사용할 수 있지만 filter는 불가능 합니다. filter filter는 dispatcher servlet 호출...","categories": ["spring"],
+        "tags": [],
+        "url": "http://localhost:4000/spring/filter-and-interceptor/",
         "teaser": null
       }]

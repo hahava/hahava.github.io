@@ -6,9 +6,9 @@ categories:
 
 ### Servlet 과 Spring
 
-![http request in spring](../../images/http-request-flow.png)
+Spring 에서 http request의 흐름은 아래와 같은 형태로 진행됩니다. Container에서 http request가 들어오면 각각의 단계 별로 메서드를 호출합니다. 
 
-Spring 에서 http request의 흐름은 위와 같은 형태로 진행됩니다. Container에서 http request가 들어오면 각각의 단계 별로 메서드를 호출합니다. 
+<img src="{{site.baseurl}}/assets/img/http-request-flow.png">
 
 ### Servlet container
 Servlet container 는 Servlet 을 실행 및 관리하는 주체 입니다. 스펙이 정해져있으며 tomcat, jeus 등이 있습니다.

@@ -1,7 +1,7 @@
 ---
 title: "Spring converter"
 categories:
- - spring-mvc
+ - spring
 ---
 
 spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다.
