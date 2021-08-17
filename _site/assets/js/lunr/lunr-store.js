@@ -96,7 +96,7 @@ var store = [{
         "teaser": null
       },{
         "title": "Servlet and Spring",
-        "excerpt":"Servlet 과 Spring Spring 에서 http request의 흐름은 아래와 같은 형태로 진행됩니다. Container에서 http request가 들어오면 각각의 단계 별로 메서드를 호출합니다. Servlet container Servlet container 는 Servlet 을 실행 및 관리하는 주체 입니다. 스펙이 정해져있으며 tomcat, jeus 등이 있습니다. Servlet servlet은 javax.servlet 패키지에 정의된 인터페이스 입니다. 자바 플랫폼에서 컴포넌트를 기반으로...","categories": ["spring"],
+        "excerpt":"Servlet 과 Spring Spring 에서 http request의 흐름은 아래와 같은 형태로 진행됩니다. Container에서 http request가 들어오면 각각의 단계 별로 메서드를 호출합니다. Servlet container Servlet container 는 Servlet 을 실행 및 관리하는 주체 입니다. 스펙이 정해져있으며 tomcat, jeus 등이 있습니다. servlet 객체는 싱글톤으로 관리됩니다. 모든 요청은 동일한 객체 인스턴스에 접근하며, 요청당...","categories": ["spring"],
         "tags": [],
         "url": "http://localhost:4000/spring/spring-and-servlet/",
         "teaser": null

@@ -13,13 +13,18 @@ Spring 에서 http request의 흐름은 아래와 같은 형태로 진행됩니�
 ### Servlet container
 Servlet container 는 Servlet 을 실행 및 관리하는 주체 입니다. 스펙이 정해져있으며 tomcat, jeus 등이 있습니다.
 
-### Servlet 
+<img src="{{site.baseurl}}/assets/img/servlet-thread.png">
+
+servlet 객체는 싱글톤으로 관리됩니다. 모든 요청은 동일한 객체 인스턴스에 접근하며, 요청당 쓰레드로 처리하게 됩니다.
+
+### Servlet life cycle
 servlet은 `javax.servlet` 패키지에 정의된 인터페이스 입니다. 자바 플랫폼에서 컴포넌트를 기반으로 하는 웹 애플리케이션을 개발할 때 사용하는 기술입니다. 3개의 life cycle을 갖습니다.
 - init: 초기화 단계에서 실행. 클래스 단위에서 단 한번만 실행
 
 - service: 스레드로 사용자 요청을 처리
 
 - destroy: 상태 종료시 호출
+
 
 ### Dispatcher Servlet
 spring에서 모든 요청은 dispatcher servlet을 통해 작성된 controller로 요청을 넘깁니다. 즉, 최상단의 controller라고 정의할 수 있으며, Spring ioc 컨테이너안에 있어 Spring의 모든 기능을 사용할 수 있습니다. dispatcher servlet은 `web.xml` 또는 `WebApplicationInitializer` 으로 servlet context에 등록합니다.

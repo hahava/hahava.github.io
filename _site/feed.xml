@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-08-11T17:22:16+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">Spring exception</title><link href="http://localhost:4000/spring/exception/" rel="alternate" type="text/html" title="Spring exception" /><published>2021-07-26T00:00:00+09:00</published><updated>2021-07-26T00:00:00+09:00</updated><id>http://localhost:4000/spring/exception</id><content type="html" xml:base="http://localhost:4000/spring/exception/">&lt;p&gt;spring 애플리케이션을 실행 후 예외 발생 시 경우에 따른 플로우 및 처리 방법을 정리합니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-08-17T19:58:46+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">Spring exception</title><link href="http://localhost:4000/spring/exception/" rel="alternate" type="text/html" title="Spring exception" /><published>2021-07-26T00:00:00+09:00</published><updated>2021-07-26T00:00:00+09:00</updated><id>http://localhost:4000/spring/exception</id><content type="html" xml:base="http://localhost:4000/spring/exception/">&lt;p&gt;spring 애플리케이션을 실행 후 예외 발생 시 경우에 따른 플로우 및 처리 방법을 정리합니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;servlet-관점&quot;&gt;servlet 관점&lt;/h2&gt;
 
@@ -312,7 +312,11 @@
 &lt;h3 id=&quot;servlet-container&quot;&gt;Servlet container&lt;/h3&gt;
 &lt;p&gt;Servlet container 는 Servlet 을 실행 및 관리하는 주체 입니다. 스펙이 정해져있으며 tomcat, jeus 등이 있습니다.&lt;/p&gt;
 
-&lt;h3 id=&quot;servlet&quot;&gt;Servlet&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/img/servlet-thread.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;servlet 객체는 싱글톤으로 관리됩니다. 모든 요청은 동일한 객체 인스턴스에 접근하며, 요청당 쓰레드로 처리하게 됩니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;servlet-life-cycle&quot;&gt;Servlet life cycle&lt;/h3&gt;
 &lt;p&gt;servlet은 &lt;code class=&quot;highlighter-rouge&quot;&gt;javax.servlet&lt;/code&gt; 패키지에 정의된 인터페이스 입니다. 자바 플랫폼에서 컴포넌트를 기반으로 하는 웹 애플리케이션을 개발할 때 사용하는 기술입니다. 3개의 life cycle을 갖습니다.&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;
