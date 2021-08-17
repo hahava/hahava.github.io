@@ -118,4 +118,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/spring/filter-and-interceptor/",
         "teaser": null
+      },{
+        "title": "Spring exception",
+        "excerpt":"spring 애플리케이션을 실행 후 예외 발생 시 경우에 따른 플로우 및 처리 방법을 정리합니다. servlet 관점 servlet은 2가지 방법으로 예외를 처리할 수 있습니다. Exception 발생 response.sendError() servlet에서 예외가 발생하면 web container는 web.xml에서 에러 관련 설정을 찾아 수행하게 됩니다. &lt;web-app&gt; &lt;error-page&gt; &lt;error-code&gt;404&lt;/error-code&gt; &lt;location&gt;/error/404.html&lt;/location&gt; &lt;/error-page&gt; &lt;error-page&gt; &lt;exception-type&gt;java.lang.Exception&lt;/exception-type&gt; &lt;location&gt;/error/500.html&lt;/location&gt; &lt;/error-page&gt; &lt;/web-app&gt; spring 및...","categories": ["spring"],
+        "tags": [],
+        "url": "http://localhost:4000/spring/exception/",
+        "teaser": null
       }]
