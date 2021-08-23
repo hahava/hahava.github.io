@@ -124,4 +124,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/spring/exception/",
         "teaser": null
+      },{
+        "title": "2021.08.23-개발일지",
+        "excerpt":"url 을 통해 filter 처리를 하는 로직에서 문제가 생긴적이 있습니다. 기본적으로 url parameter 라 표현하면 /website/example?param=1 와 같이 ?param=1 형태를 생각할 것이라 생각합니다. 그러나 해당 용어는 정식으로 query string이라 표현하며, url parameter는 /website/example;param=1 의 형태를 의미합니다. &lt;scheme&gt;://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;/&lt;path&gt;;&lt;parameters&gt;?&lt;query&gt;#&lt;fragment&gt; http url 은 위와 같은 형식으로 작성됩니다. 이때 내용을 구분하기 위한 몇개의 예약문자가...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/devlog/",
+        "teaser": null
       }]
