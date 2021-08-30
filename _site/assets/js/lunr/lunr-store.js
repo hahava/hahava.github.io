@@ -122,12 +122,18 @@ var store = [{
         "title": "Spring exception",
         "excerpt":"spring 애플리케이션을 실행 후 예외 발생 시 경우에 따른 플로우 및 처리 방법을 정리합니다. servlet 관점 servlet은 2가지 방법으로 예외를 처리할 수 있습니다. Exception 발생 response.sendError() servlet에서 예외가 발생하면 web container는 web.xml에서 에러 관련 설정을 찾아 수행하게 됩니다. &lt;web-app&gt; &lt;error-page&gt; &lt;error-code&gt;404&lt;/error-code&gt; &lt;location&gt;/error/404.html&lt;/location&gt; &lt;/error-page&gt; &lt;error-page&gt; &lt;exception-type&gt;java.lang.Exception&lt;/exception-type&gt; &lt;location&gt;/error/500.html&lt;/location&gt; &lt;/error-page&gt; &lt;/web-app&gt; spring 및...","categories": ["spring"],
         "tags": [],
-        "url": "http://localhost:4000/spring/exception/",
+        "url": "http://localhost:4000/spring/spring-exception/",
         "teaser": null
       },{
         "title": "2021.08.23-개발일지",
         "excerpt":"url 을 통해 filter 처리를 하는 로직에서 문제가 생긴적이 있습니다. 기본적으로 url parameter 라 표현하면 /website/example?param=1 와 같이 ?param=1 형태를 생각할 것이라 생각합니다. 그러나 해당 용어는 정식으로 query string이라 표현하며, url parameter는 /website/example;param=1 의 형태를 의미합니다. &lt;scheme&gt;://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;/&lt;path&gt;;&lt;parameters&gt;?&lt;query&gt;#&lt;fragment&gt; http url 은 위와 같은 형식으로 작성됩니다. 이때 내용을 구분하기 위한 몇개의 예약문자가...","categories": ["dev_log"],
         "tags": [],
-        "url": "http://localhost:4000/dev_log/devlog/",
+        "url": "http://localhost:4000/dev_log/devlo-20210823g/",
+        "teaser": null
+      },{
+        "title": "Spring file upload",
+        "excerpt":"http 통신으로 이미지등의 파일을 전송할때는 일반적으로 multipart-form/data 를 통해 전달합니다. multipart-form/data 처리하기 multipart/form-data 란 http 스펙중 하나이며, 데이터를 part 단위로 구분하여 메시지 또는 파일을 전송합니다. html form 태그에서 사용시엔 속성을enctype='multipart/form-data' 로 설정해야 합니다. 각 part는 key/value 형태로 구성되었으며 part별 header가 존재하여 데이터 형식 및 값을 정의합니다. part는 Boundary를 통해 구분하며,...","categories": ["spring"],
+        "tags": [],
+        "url": "http://localhost:4000/spring/spring-file-upload/",
         "teaser": null
       }]
