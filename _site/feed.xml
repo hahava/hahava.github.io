@@ -1,4 +1,59 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-08-30T16:19:51+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">Spring file upload</title><link href="http://localhost:4000/spring/spring-file-upload/" rel="alternate" type="text/html" title="Spring file upload" /><published>2021-08-26T00:00:00+09:00</published><updated>2021-08-26T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-file-upload</id><content type="html" xml:base="http://localhost:4000/spring/spring-file-upload/">&lt;p&gt;http 통신으로 이미지등의 파일을 전송할때는 일반적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;multipart-form/data&lt;/code&gt; 를 통해 전달합니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-18T16:08:02+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">2021.10.18-개발일지</title><link href="http://localhost:4000/dev_log/kotlin-noargs/" rel="alternate" type="text/html" title="2021.10.18-개발일지" /><published>2021-10-18T00:00:00+09:00</published><updated>2021-10-18T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/kotlin-noargs</id><content type="html" xml:base="http://localhost:4000/dev_log/kotlin-noargs/">&lt;p&gt;kotlin 에서 reflection 사용시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.lang.NoSuchMethodException&lt;/code&gt; 에러 메시지가 발생했습니다. 해당 코드는 기본생성자가 없어 발생한 문제였습니다. reflection의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;newInstance&lt;/code&gt; 메서드를 확인해보면 클래스의 정보를 가져오면서 이때 선언된 생성자들을 통해 객체를 만들게 되어 있습니다.&lt;/p&gt;
+
+&lt;h6 id=&quot;classjava&quot;&gt;Class.java&lt;/h6&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Constructor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getConstructor0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;?&amp;gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parameterTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                                    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;which&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;NoSuchMethodException&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Constructor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;constructors&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;privateGetDeclaredConstructors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;which&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;PUBLIC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Constructor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;constructor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;constructors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arrayContentsEq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parameterTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getParameterTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getReflectionFactory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;copyConstructor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;NoSuchMethodException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;.&amp;lt;init&amp;gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argumentTypesToString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parameterTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;그러나 제가 작성한 kotlin data 클래스에선 기본생성자가 존재하지 않기에 해당 생성자를 호출하지 못하였습니다. 이것을 해결하기 위해선 억지로 기본생성자 역할을 하는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;init&lt;/code&gt; 블럭 또는 빈(empty) 생성자를 호출할 수 있게 property등의 기본값을 설정해야 합니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;noargs-plugin-설정하기&quot;&gt;noargs plugin 설정하기&lt;/h3&gt;
+&lt;p&gt;기본값을 설정할 경우 data class의 본 용도와는 다르게 사용될 수 있기에 kotlin 의 &lt;a href=&quot;https://kotlinlang.org/docs/no-arg-plugin.html&quot;&gt;noargs&lt;/a&gt; 플러그인을 적용하여 해결 할 수 있습니다.&lt;/p&gt;
+
+&lt;h6 id=&quot;buildgradlekt&quot;&gt;build.gradle.kt&lt;/h6&gt;
+&lt;div class=&quot;language-gradle highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.jetbrains.kotlin.noarg.gradle.NoArgExtension&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;plugins&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;org.jetbrains.kotlin.plugin.noarg&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;1.5.21&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NoArgExtension&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;annotation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;com.example.demo.NoArg&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ......(1)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;implementation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;org.jetbrains.kotlin:kotlin-noarg&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;(1) : plugin을 설정할 범위를 선택합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NoArg&lt;/code&gt; annotation을 선언한 클래스는 해당 플러그인이 적용됩니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id=&quot;mainkt&quot;&gt;main.kt&lt;/h6&gt;
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getConstructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;newInstance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@NoArg&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;data class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Retention&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;AnnotationRetention&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;RUNTIME&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nd&quot;&gt;@Target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;AnnotationTarget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;CLASS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;annotation&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;NoArg&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;결과 추가적인 코드의 변경없이 reflection을 사용할 수 있습니다. 또한 해당 코드는 런타임시에 작동하므로 개발자가 직접 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Person()&lt;/code&gt; 과 같이 빈 생성자로 객체를 생성할 수 없다는 장점이 있습니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">kotlin 에서 기본 생성자 사용하기</summary></entry><entry><title type="html">Spring file upload</title><link href="http://localhost:4000/spring/spring-file-upload/" rel="alternate" type="text/html" title="Spring file upload" /><published>2021-08-26T00:00:00+09:00</published><updated>2021-08-26T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-file-upload</id><content type="html" xml:base="http://localhost:4000/spring/spring-file-upload/">&lt;p&gt;http 통신으로 이미지등의 파일을 전송할때는 일반적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;multipart-form/data&lt;/code&gt; 를 통해 전달합니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;multipart-formdata-처리하기&quot;&gt;multipart-form/data 처리하기&lt;/h2&gt;
 
@@ -797,131 +852,4 @@ ftp://hahava:1234@github.com:21/images/me.png
 &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;baseUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;위와 같은경우 url의 변수의 값은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://hahava.com?language=c%2B%2B&lt;/code&gt; 의 형태로 저장됩니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">URL(Uniform Resource Locator)은 인터넷 리소스를 가리키는 표준이름입니다. URL은 브라우저를 통해 정보를 찾는데 필요한 모든것을 제공하며, 원하는 리소스가 어디에 위치하고 어떻게 가져오는지를 정의합니다.</summary></entry><entry><title type="html">01-http 기본</title><link href="http://localhost:4000/http/http-basic/" rel="alternate" type="text/html" title="01-http 기본" /><published>2021-06-23T00:00:00+09:00</published><updated>2021-06-23T00:00:00+09:00</updated><id>http://localhost:4000/http/http-basic</id><content type="html" xml:base="http://localhost:4000/http/http-basic/">&lt;p&gt;Http는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Hypertext transfer protocol&lt;/code&gt;의 약자로 네트워크상의 프로토콜입니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;resource&quot;&gt;Resource&lt;/h3&gt;
-&lt;p&gt;웹 서버는 리소스를 관리하고 제공합니다. 리소스는 단순한 정적파일만을 의미하는 것이 아닙니다. 웹에서 제공하는 모든 컨텐츠를 의미합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;media-type&quot;&gt;Media Type&lt;/h3&gt;
-&lt;p&gt;http는 웹에서 전송되는 객체에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MIME&lt;/code&gt; 타입 이라는 데이터 포멧 라벨을 붙입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MIME&lt;/code&gt;은 이메일 시스템에서 사용하려 개발되었으나 그 편의성 덕분에 http에서도 채용되었습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MIME&lt;/code&gt;은 사선으로(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/&lt;/code&gt;) 주 타입과 부 타입을 구분합니다. 대소문자를 구분하지 않지만, 일반적으로 소문자를 사용합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- text/html
-- text/plain
-- image/jpeg
-- image/gif
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;위와 같은 형태가 존재하며 서버에서는 아래와 같은 형태로 데이터를 반환합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;Content-type : image/jpeg
-Content-length : 12345
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;uri&quot;&gt;URI&lt;/h3&gt;
-&lt;p&gt;웹 서버 리소스는 각자 이름을 갖고 있습니다. 이에 클라리언트는 특정 리소스를 지목할 수 있으며, 그 이름을 URI(Uniform resource identifier)라 칭합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png
-프로토콜://도메인        /리소스
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;url&quot;&gt;URL&lt;/h3&gt;
-&lt;p&gt;URL은 (Uniform resource locator) 의 약자이며 자원의 위치를 의미합니다. URI은 URL을 포괄하는 개념이며 현재는 거의 동일한 의미로 사용되고 있습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;transaction&quot;&gt;Transaction&lt;/h3&gt;
-&lt;p&gt;Http 통신은 정형화된 데이터를 통해 이루어지며 아래와 같은 형태를 가지고 있습니다.&lt;/p&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.google.com&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;상기 요청에 대한 응답은 아래와 같은 형태입니다.&lt;/p&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;content-type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;image/png&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Content-Length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;5969&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;method&quot;&gt;Method&lt;/h3&gt;
-&lt;p&gt;http는 method라고 부리는 여러가지 종류의 요청 명령을 지원합니다. 모든 http 요청 메시지는 한 개의 메서드를 갖습니다. method는 서버에게 어떤 동작이 취해져야 함을 의미하면 자주사용되는 method는 아래와 같습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;Http 메서드&lt;/th&gt;
-      &lt;th&gt;설명&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;GET&lt;/td&gt;
-      &lt;td&gt;URI 해당 하는 리소스 요청&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;POST&lt;/td&gt;
-      &lt;td&gt;URI 해당 하는 이름으로 리소스를 저장&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;PUT&lt;/td&gt;
-      &lt;td&gt;URI 해당 하는 리소스 변경&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;PUT&lt;/td&gt;
-      &lt;td&gt;URI 해당 하는 리소스 삭제&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;HEAD&lt;/td&gt;
-      &lt;td&gt;URI에 해당하는 http 헤더 부분만 요청&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;message&quot;&gt;Message&lt;/h3&gt;
-
-&lt;p&gt;http 메시지는 단순한 줄 단위의 문자열입니디. 이진 형식이 아닌 일반 텍스트이기 때문에 사람이 읽고 쓰기 쉽습니다. 요청(request) 메시지와 응답(response) 메시지는 아래와 같은 형식으로 되어 있습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;request&quot;&gt;request&lt;/h3&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;GET / HTTP/1.1           -&amp;gt; 시작줄
-Host: www.google.com     -&amp;gt; header
-Accept: text/html        -&amp;gt; body
-
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;response&quot;&gt;response&lt;/h3&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;OK                             -&amp;gt; 시작줄&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Expires&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;-1                                 -&amp;gt; header&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html; charset=ISO-8859&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gws&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;X-Frame-Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;SAMEORIGIN&lt;/span&gt;
-
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&amp;lt;/html&amp;gt;&lt;/span&gt;                               -&amp;gt; body
-.......
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;시작줄&lt;/strong&gt;&lt;br /&gt;
-메시지의 첫 줄은 시작줄로 요청의 경우 method, URL, http 버전등을 명시하며 응답의 경우 상태코드을 명시합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;header&lt;/strong&gt;&lt;br /&gt;
-시작줄 다음에 이어지는 내용으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;:&lt;/code&gt; 통해 이름과 값으로 구분됩니다. 필드를 추가하려면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\r\n&lt;/code&gt; 으로 구분하며 마지막은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\r\n\r\n&lt;/code&gt;으로 끝납니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;body&lt;/strong&gt;&lt;br /&gt;
-header 이후 어떤 종류의 데이터든 들어갈 수 있는 메시지 본문이 필요에 따라 올 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IOException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nc&quot;&gt;Socket&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;google.com&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;nc&quot;&gt;PrintWriter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;printWriter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PrintWriter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getOutputStream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;printWriter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET / HTTP/1.1\r\n&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;printWriter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Host: www.google.com\r\n&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;printWriter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Accept: text/html\r\n\r\n&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;printWriter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;flush&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-
-    &lt;span class=&quot;nc&quot;&gt;BufferedReader&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;br&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BufferedReader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;InputStreamReader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getInputStream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()));&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isConnected&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;br&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;readLine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;equals&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;br&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">Http는 Hypertext transfer protocol의 약자로 네트워크상의 프로토콜입니다.</summary></entry></feed>
+&lt;p&gt;위와 같은경우 url의 변수의 값은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://hahava.com?language=c%2B%2B&lt;/code&gt; 의 형태로 저장됩니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">URL(Uniform Resource Locator)은 인터넷 리소스를 가리키는 표준이름입니다. URL은 브라우저를 통해 정보를 찾는데 필요한 모든것을 제공하며, 원하는 리소스가 어디에 위치하고 어떻게 가져오는지를 정의합니다.</summary></entry></feed>

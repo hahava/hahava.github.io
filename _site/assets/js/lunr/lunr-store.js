@@ -136,4 +136,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/spring/spring-file-upload/",
         "teaser": null
+      },{
+        "title": "2021.10.18-개발일지",
+        "excerpt":"kotlin 에서 reflection 사용시 java.lang.NoSuchMethodException 에러 메시지가 발생했습니다. 해당 코드는 기본생성자가 없어 발생한 문제였습니다. reflection의 newInstance 메서드를 확인해보면 클래스의 정보를 가져오면서 이때 선언된 생성자들을 통해 객체를 만들게 되어 있습니다. Class.java private Constructor&lt;T&gt; getConstructor0(Class&lt;?&gt;[] parameterTypes, int which) throws NoSuchMethodException { Constructor&lt;T&gt;[] constructors = privateGetDeclaredConstructors((which == Member.PUBLIC)); for (Constructor&lt;T&gt; constructor : constructors)...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/kotlin-noargs/",
+        "teaser": null
       }]
