@@ -1,4 +1,176 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-18T16:08:02+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">2021.10.18-개발일지</title><link href="http://localhost:4000/dev_log/kotlin-noargs/" rel="alternate" type="text/html" title="2021.10.18-개발일지" /><published>2021-10-18T00:00:00+09:00</published><updated>2021-10-18T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/kotlin-noargs</id><content type="html" xml:base="http://localhost:4000/dev_log/kotlin-noargs/">&lt;p&gt;kotlin 에서 reflection 사용시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.lang.NoSuchMethodException&lt;/code&gt; 에러 메시지가 발생했습니다. 해당 코드는 기본생성자가 없어 발생한 문제였습니다. reflection의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;newInstance&lt;/code&gt; 메서드를 확인해보면 클래스의 정보를 가져오면서 이때 선언된 생성자들을 통해 객체를 만들게 되어 있습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-20T15:46:40+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">2021.10.20-개발일지</title><link href="http://localhost:4000/dev_log/mock-server/" rel="alternate" type="text/html" title="2021.10.20-개발일지" /><published>2021-10-20T00:00:00+09:00</published><updated>2021-10-20T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/mock-server</id><content type="html" xml:base="http://localhost:4000/dev_log/mock-server/">&lt;p&gt;spring에서 외부에서 제공하는 api를 테스트 하고 싶었습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;webclient&lt;/code&gt;를 이용하는데 service코드를 직접 호출하여 결과를 확인 할 수도 있었지만, 호출 전 또는 외부 서버의 상황에 구애받지 않고 테스트 하고 싶었습니다. 공식 문서와 구글링 결과 많이 사용하는 프레임워크로는 &lt;a href=&quot;https://www.mock-server.com/&quot;&gt;mockserver-netty&lt;/a&gt; 또는 &lt;a href=&quot;https://github.com/square/okhttp/tree/master/mockwebserver&quot;&gt;okhttp-mock&lt;/a&gt;등이 존재합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;개발환경&quot;&gt;개발환경&lt;/h2&gt;
+&lt;p&gt;2가지 방식의 예제를 살펴보기전에 외부 api서버를 호출하는 service코드 및 http response를 정의합니다.&lt;/p&gt;
+
+&lt;h6 id=&quot;personkt&quot;&gt;Person.kt&lt;/h6&gt;
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;data class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;예제에 사용될 model 입니다.&lt;/p&gt;
+
+&lt;h6 id=&quot;personapikt&quot;&gt;PersonApi.kt&lt;/h6&gt;
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Component&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PersonApi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;nd&quot;&gt;@Value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;\${person.api.host}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;nd&quot;&gt;@Value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;\${person.api.path}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;webClient&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;WebClient&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;WebClient&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getPersonById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;webClient&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;retrieve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;bodyToMono&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!!&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;webclient를 이용하여 api를 호출합니다. 이때 baseUrl 과 path를 분리합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;GET /person Http 200 
+
+{&quot;name&quot;: &quot;hahava&quot;,&quot;age&quot;: 30}
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;기대하는 결과값은 위와 같은 형태입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;okhttp-mockerserver&quot;&gt;OkHttp MockerServer&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html#webflux-client-testing&quot;&gt;spring-docs&lt;/a&gt; 공식 문서에서 추천하는 프레임워크입니다. 안드로이드에서 okhttp를 webclient로 많이 사용하기 때문에 mockserver 개발시 함께 많이 사용하는 것으로 보입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-gradle highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;testImplementation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;com.squareup.okhttp3:okhttp:4.9.2&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;testImplementation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;com.squareup.okhttp3:mockwebserver:4.9.2&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위와 같이 2개의 라이브러리를 추가합니다. 이때 두 라이브러리의 버전은 일치해야 하며, 의존성 문제로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;okhttp&lt;/code&gt;가 반드시 필요합니다. (버전이 일치 하지 않거나 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;okhttp&lt;/code&gt;추가 하지 않을 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NoClassDeffoundError&lt;/code&gt; 발생)&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@SpringBootTest&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OkHttpServerTest&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;lateinit&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;mockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MockWebServer&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;lateinit&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;personApi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PersonApi&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;\${person.api.path}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;lateinit&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@BeforeEach&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;mockServerPort&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8888&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;mockWebServer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;mockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mockServerPort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ... (1)&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;personApi&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PersonApi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://localhost:$mockServerPort&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ... (2)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@AfterEach&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;destroy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;mockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;shutdown&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getPersonTest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;mockResponse&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MockResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ... (3)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setResponseCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setBody&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+                        {
+                          &quot;name&quot;: &quot;hahava&quot;,
+                          &quot;age&quot;: 30
+                        }
+                &quot;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;trimIndent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; 
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;HttpHeaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;CONTENT_TYPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MediaType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;APPLICATION_JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;mockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;enqueue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mockResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ... (4)&lt;/span&gt;
+
+        &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;personApi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getPersonById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;assertThat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;isEqualTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;assertThat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;isEqualTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;hahava&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;recordedRequest&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;takeRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ... (5)&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;assertThat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recordedRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;isEqualTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;assertThat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;recordedRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;isEqualTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;HttpMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;(1): mock 서버를 실행할 port를 정합니다.&lt;/li&gt;
+  &lt;li&gt;(2): 실행된 mock 서버와 동일한 port 및 host를 지정해야 합니다.&lt;/li&gt;
+  &lt;li&gt;(3): 외부 서버의 api 응답에 대한 예상 결과 값을 지정합니다.&lt;/li&gt;
+  &lt;li&gt;(4): 정해진 응답(MockResponse)을 queue에 추가합니다. 여러개의 resoonse를 설정하면 request전송 순서 별 매칭됩니다.&lt;/li&gt;
+  &lt;li&gt;(5): 실제 service코드가 실행된 후 기록하여 해당 변수에 할당합니다. 선언 순서별로 추가적인 기록을 할 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이떄 주의할점은 path 값에 상관없이 host:port 만 동일하면 request가 캡쳐됩니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;netty-mockserver&quot;&gt;Netty Mockserver&lt;/h2&gt;
+
+&lt;p&gt;이름이 netty라서 꼭 &lt;a href=&quot;https://netty.io/index.html&quot;&gt;netty&lt;/a&gt;와 관련있나 싶지만 딱히 연관성은 잘 모르겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-gradle highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;testImplementation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;org.mock-server:mockserver-netty:5.11.1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;testImplementation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;org.mock-server:mockserver-client-java:5.11.1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OkHttp&lt;/code&gt; 와 비슷하게 동일한 버전으로 2가지 라이브러리를 추가합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@SpringBootTest&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;NettyServerTest&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;lateinit&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;mockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ClientAndServer&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;lateinit&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;personApi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PersonApi&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;\${person.api.path}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;lateinit&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@BeforeEach&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;mockServerPort&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8888&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;mockWebServer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ClientAndServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;startClientAndServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mockServerPort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// ... (1)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;personApi&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PersonApi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://localhost:$mockServerPort&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ... (2)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@AfterEach&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;destroy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;mockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;stop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Test&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getPersonTest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;mockWebServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;`when`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ... (3)&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;HttpRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;withMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;HttpMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;respond&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                &lt;span class=&quot;nc&quot;&gt;HttpResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;withHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;HttpHeaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;CONTENT_TYPE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MediaType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;APPLICATION_JSON_VALUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                        &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;withBody&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+                        {
+                          &quot;name&quot;: &quot;hahava&quot;,
+                          &quot;age&quot;: 30
+                        }
+                        &quot;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;trimIndent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;personApi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getPersonById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;Assertions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;assertThat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;isEqualTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;Assertions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;assertThat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;isEqualTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;hahava&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;(1): mock 서버를 실행할 port를 정합니다.&lt;/li&gt;
+  &lt;li&gt;(2): 실행된 mock 서버와 동일한 port 및 host를 지정해야 합니다.&lt;/li&gt;
+  &lt;li&gt;(3): request에 대한 response값을 설정합니다. 이때 okhttp와는 다르게 반드시 path가 일치해야 성공합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;개인적으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;netty-mockserver&lt;/code&gt;가 가독성이 더 좋아서 선호합니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">mockserver로 외부 api 테스트하기</summary></entry><entry><title type="html">2021.10.18-개발일지</title><link href="http://localhost:4000/dev_log/kotlin-noargs/" rel="alternate" type="text/html" title="2021.10.18-개발일지" /><published>2021-10-18T00:00:00+09:00</published><updated>2021-10-18T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/kotlin-noargs</id><content type="html" xml:base="http://localhost:4000/dev_log/kotlin-noargs/">&lt;p&gt;kotlin 에서 reflection 사용시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.lang.NoSuchMethodException&lt;/code&gt; 에러 메시지가 발생했습니다. 해당 코드는 기본생성자가 없어 발생한 문제였습니다. reflection의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;newInstance&lt;/code&gt; 메서드를 확인해보면 클래스의 정보를 가져오면서 이때 선언된 생성자들을 통해 객체를 만들게 되어 있습니다.&lt;/p&gt;
 
 &lt;h6 id=&quot;classjava&quot;&gt;Class.java&lt;/h6&gt;
 &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Constructor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getConstructor0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;?&amp;gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parameterTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
@@ -800,56 +972,4 @@ GET /website/example
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h4 id=&quot;503-service-unavailable&quot;&gt;503-Service Unavailable&lt;/h4&gt;
-&lt;p&gt;서버가 요청을 처리할 준비가되지 않았음을 의미합니다. 일반적으로 서버가 다운됐거나 과부하 상태인 경우입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;503&lt;/code&gt; 을 반환할 경우 해당 응답이 캐시되지 않도록 주의해야 합니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">Http 응답 메시지의 상태코드는 크게 다섯가지로 나뉩니다. 상태코드는 세자리 숫자로 100~599 번 까지 정해져 있으며 각각의 의미가 존재합니다. 자주 사용되는 코드 및 설명은 아래와 같습니다.</summary></entry><entry><title type="html">02-http URL</title><link href="http://localhost:4000/http/http-urls/" rel="alternate" type="text/html" title="02-http URL" /><published>2021-06-28T00:00:00+09:00</published><updated>2021-06-28T00:00:00+09:00</updated><id>http://localhost:4000/http/http-urls</id><content type="html" xml:base="http://localhost:4000/http/http-urls/">&lt;p&gt;URL(Uniform Resource Locator)은 인터넷 리소스를 가리키는 표준이름입니다. URL은 브라우저를 통해 정보를 찾는데 필요한 모든것을 제공하며, 원하는 리소스가 어디에 위치하고 어떻게 가져오는지를 정의합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;url-문법&quot;&gt;URL 문법&lt;/h3&gt;
-&lt;p&gt;URL문법은 스킴에 따라서 달라집니다. 그러나 그것이 전혀 다른 문법을 사용한다는 의미는 아닙니다. 대부분의 URL은 일반 URL 문법을 따르며(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;스킴://서버위치/경로&lt;/code&gt;), 특성상 일부의 차이가 존재합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;&amp;lt;스킴&amp;gt;://&amp;lt;사용자이름&amp;gt;:&amp;lt;비밀번호&amp;gt;@&amp;lt;호스트&amp;gt;:&amp;lt;포트&amp;gt;/&amp;lt;경로&amp;gt;;&amp;lt;파라미터&amp;gt;?&amp;lt;질의&amp;gt;#&amp;lt;프래그먼트&amp;gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;http&quot;&gt;http&lt;/h3&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;http://&amp;lt;호스트&amp;gt;:&amp;lt;포트&amp;gt;/&amp;lt;경로&amp;gt;?&amp;lt;질의&amp;gt;#&amp;lt;프래그먼트&amp;gt;  
-http://www.naver.com:80
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이름과 비밀번호가 존재하지 않는것을 제외하면 일반적인 URL 규칙을 따릅니다. 포트는 명시하지 않으면 기본으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;80&lt;/code&gt;으로 인식합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;https&quot;&gt;https&lt;/h3&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;https://&amp;lt;호스트&amp;gt;:&amp;lt;포트&amp;gt;/&amp;lt;경로&amp;gt;?&amp;lt;질의&amp;gt;#&amp;lt;프래그먼트&amp;gt;  
-https://www.naver.com:80
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;https와 http의 URL 문법은 스킴을 제외하고 완벽하게 동일합니다. 포트는 기본적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;443&lt;/code&gt;을 사용합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;mailto&quot;&gt;mailto&lt;/h3&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;mailto:&amp;lt;email-address&amp;gt;
-mailto:hahava@github.com
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;mailto는 이메일 주소를 가르킵니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;ftp&quot;&gt;ftp&lt;/h3&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;ftp://&amp;lt;사용자 이름&amp;gt;:&amp;lt;비밀번호&amp;gt;@&amp;lt;호스트&amp;gt;:&amp;lt;포트&amp;gt;/&amp;lt;경로&amp;gt;:&amp;lt;파라미터&amp;gt;
-ftp://hahava:1234@github.com:21/images/me.png
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;FTP(File Transfer Protocol)URL은 ftp 서버에 있는 파일 관련 리소스를 처리하며 일반적인 URL 형태를 갖습니다. 기본적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;21&lt;/code&gt; 포트를 사용합니다.&lt;/p&gt;
-
-&lt;p&gt;이 외 다양한 프로토클은 &lt;a href=&quot;https://en.wikipedia.org/wiki/List_of_URI_schemes&quot;&gt;위키피디아_url_protocol_list&lt;/a&gt; 에서 찾을 수 있습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;인코딩쳬계&quot;&gt;인코딩쳬계&lt;/h3&gt;
-&lt;p&gt;일반적으로 많은 컴퓨터 시스템에선 7비트를 사용하는 US-ASCII를 문자열로 사용해왔습니다. 그러나 URL 설계자들은 URL에 이스케이프 문자열을 사용할 수 있게하여 이동성과 완성도를 높였습니다.&lt;/p&gt;
-
-&lt;p&gt;URL에 혼동을 줄 수 있는 안전하지 않은 문자열을 처리하기 위해 특정한 인코딩 방식이 고안되었습니다. 인코딩은 안전하지 않은 문자를 퍼센티지&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%&lt;/code&gt; 기호로 시작해, ASCII 코드로 표현되는 두 개의 16진수 숫자로 이루어진 이스케이프 문자로 변경합니다.&lt;/p&gt;
-
-&lt;p&gt;문자별 인코딩은 &lt;a href=&quot;https://en.wikipedia.org/wiki/Percent-encoding&quot;&gt;위키_URL_Encode&lt;/a&gt; 에서 확인할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;일반적으로 사용자가 웹 브라우저를 통해 URL을 입력하면, 대부분의 웹 브라우저에선 안전하지 않은 문자열들을 자동으로 변환해줍니다. 만약 코드 상에서 사용한다면 아래와 같은 형태로 변환하여 사용할 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;baseUrl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;http://hahava.com&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;`language=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;encodeURIComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;c++&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;baseUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;위와 같은경우 url의 변수의 값은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://hahava.com?language=c%2B%2B&lt;/code&gt; 의 형태로 저장됩니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">URL(Uniform Resource Locator)은 인터넷 리소스를 가리키는 표준이름입니다. URL은 브라우저를 통해 정보를 찾는데 필요한 모든것을 제공하며, 원하는 리소스가 어디에 위치하고 어떻게 가져오는지를 정의합니다.</summary></entry></feed>
+&lt;p&gt;서버가 요청을 처리할 준비가되지 않았음을 의미합니다. 일반적으로 서버가 다운됐거나 과부하 상태인 경우입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;503&lt;/code&gt; 을 반환할 경우 해당 응답이 캐시되지 않도록 주의해야 합니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">Http 응답 메시지의 상태코드는 크게 다섯가지로 나뉩니다. 상태코드는 세자리 숫자로 100~599 번 까지 정해져 있으며 각각의 의미가 존재합니다. 자주 사용되는 코드 및 설명은 아래와 같습니다.</summary></entry></feed>

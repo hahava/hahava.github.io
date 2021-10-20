@@ -142,4 +142,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/dev_log/kotlin-noargs/",
         "teaser": null
+      },{
+        "title": "2021.10.20-개발일지",
+        "excerpt":"spring에서 외부에서 제공하는 api를 테스트 하고 싶었습니다. webclient를 이용하는데 service코드를 직접 호출하여 결과를 확인 할 수도 있었지만, 호출 전 또는 외부 서버의 상황에 구애받지 않고 테스트 하고 싶었습니다. 공식 문서와 구글링 결과 많이 사용하는 프레임워크로는 mockserver-netty 또는 okhttp-mock등이 존재합니다. 개발환경 2가지 방식의 예제를 살펴보기전에 외부 api서버를 호출하는 service코드 및 http...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/mock-server/",
+        "teaser": null
       }]
