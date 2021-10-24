@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://maejinkim.github.io/sitemap.xml
+Sitemap: http://hahava.github.io/sitemap.xml
