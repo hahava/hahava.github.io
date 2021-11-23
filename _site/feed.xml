@@ -1,4 +1,94 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-24T21:56:32+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">2021.10.20-개발일지</title><link href="http://localhost:4000/dev_log/mock-server/" rel="alternate" type="text/html" title="2021.10.20-개발일지" /><published>2021-10-20T00:00:00+09:00</published><updated>2021-10-20T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/mock-server</id><content type="html" xml:base="http://localhost:4000/dev_log/mock-server/">&lt;p&gt;spring에서 외부에서 제공하는 api를 테스트 하고 싶었습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;webclient&lt;/code&gt;를 이용하는데 service코드를 직접 호출하여 결과를 확인 할 수도 있었지만, 호출 전 또는 외부 서버의 상황에 구애받지 않고 테스트 하고 싶었습니다. 공식 문서와 구글링 결과 많이 사용하는 프레임워크로는 &lt;a href=&quot;https://www.mock-server.com/&quot;&gt;mockserver-netty&lt;/a&gt; 또는 &lt;a href=&quot;https://github.com/square/okhttp/tree/master/mockwebserver&quot;&gt;okhttp-mock&lt;/a&gt;등이 존재합니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-11-23T15:24:37+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Dev log</title><subtitle>I'm a developer!</subtitle><author><name>hahava</name><email>hahava5696@gmail.com</email></author><entry><title type="html">mysql 중복키 삽입 처리</title><link href="http://localhost:4000/database/mysql-duplicated-insert-strategy" rel="alternate" type="text/html" title="mysql 중복키 삽입 처리" /><published>2021-11-23T00:00:00+09:00</published><updated>2021-11-23T00:00:00+09:00</updated><id>http://localhost:4000/database/mysql-duplicated-insert-strategy</id><content type="html" xml:base="http://localhost:4000/database/mysql-duplicated-insert-strategy">&lt;p&gt;서비스의 경우에 따라 데이터의 중복여부를 확인후 삽입해야 하는 경우가 있습니다. 애플리케이션의 비즈니스 로직에서 조회 후 처리할 수 있지만, 배치등의 처리를 할 때에는 데이터를 조회하거나 drop하는 것이 부담 될 수 있습니다. 이러한 상황에서 중복키가 존재하는 데이터의 삽입을 처리하는 방법을 정리합니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;setup&quot;&gt;setup&lt;/h3&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;DROP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MEMBER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MEMBER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;ID&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;INT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AUTO_INCREMENT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;PRIMARY&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;NAME&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;VARCHAR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NULL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;UNIQUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;AGE&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;INT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CHECK&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AGE&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AGE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;테이블을 위와 같은 형태로 정의합니다. 기본적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AUTO_INCREMENT&lt;/code&gt;을 이용한 PK와 중복방지를 위해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NAME&lt;/code&gt; 을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UNIQUE&lt;/code&gt; 하게 설정합니다. 이후 데이터를 삽입하는 과정은 아래와 같은 형태일 것 입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;insert&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ignore&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;into&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;hahava&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;insert-ignore&quot;&gt;insert ignore&lt;/h3&gt;
+
+&lt;p&gt;만약, 동일한 key가 존재할 경우 insert를 하고 싶지 않다면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;insert ignore&lt;/code&gt;을 사용하여 원본 row을 유지할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;IGNORE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MEMBER&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NAME&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AGE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;VALUES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;&quot;hahava&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;해당 구문을 실행하면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0 row(s) affected, 1 warning(s): 1062 Duplicate entry '1' for key 'PRIMARY'	0.00029 sec&lt;/code&gt; 와 같은 에러메시지를 출력합니다. 만약, mybatis 등을 사용한다면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LAST_INSERT_ID()&lt;/code&gt;을 사용하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0&lt;/code&gt; 인 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ignore&lt;/code&gt; 처리 됐음을 확인 할 수 있습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;replace&quot;&gt;replace&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;replace&lt;/code&gt;명령어를 사용하면 중복되는 key와 관련된 모든 row를 변경합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;REPLACE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MEMBER&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NAME&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AGE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;VALUES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;&quot;hahava&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이때 주의할 점은  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;delete&lt;/code&gt; 후 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;insert&lt;/code&gt; 되기 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AUTO_INCREMENT&lt;/code&gt; 사용시 id가 변경 될 수 있으며, 여러타입의 key가 중복될 경우 해당 row를 전부 삭제하고 하나의 데이터만 삽입하게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;쿼리 실행 전&lt;/strong&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th&gt;age&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;“hahava”&lt;/td&gt;
+      &lt;td&gt;30&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;“hahama”&lt;/td&gt;
+      &lt;td&gt;27&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;REPLACE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MEMBER&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NAME&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AGE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;VALUES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;&quot;hahama&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;쿼리 실행 후&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;name&lt;/code&gt; 이 겹치게 되는 row를 전부 삭제후 1건만 새롭게 추가 합니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th&gt;age&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;“hahama”&lt;/td&gt;
+      &lt;td&gt;40&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;duplicate-on-key&quot;&gt;DUPLICATE ON KEY&lt;/h3&gt;
+
+&lt;p&gt;key가 중복될시 일부분의 데이터먼 바꿀수도 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MEMBER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NAME&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AGE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;VALUES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;hahava&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DUPLICATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;KEY&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;UPDATE&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;AGE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UPDATE&lt;/code&gt; 이후 변경될 칼럼에 대한 값을 설정해주면 됩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;replace&lt;/code&gt; 와 다른점은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id&lt;/code&gt;가 변경될 일이 없으며, 2개의 이상의 key가 중복될 경우 key의 우선순위를 부여하여 (PK &amp;gt; UNIQUE) &lt;a href=&quot;https://mariadb.com/kb/en/insert-on-duplicate-key-update/#description&quot;&gt;반드시 1개의 값만 변경&lt;/a&gt;될 수 있도록 처리합니다 . 이후 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LAST_INSERT_ID()&lt;/code&gt;를 사용하여 변경된 내용을 확인할 수 있습니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">서비스의 경우에 따라 데이터의 중복여부를 확인후 삽입해야 하는 경우가 있습니다. 애플리케이션의 비즈니스 로직에서 조회 후 처리할 수 있지만, 배치등의 처리를 할 때에는 데이터를 조회하거나 drop하는 것이 부담 될 수 있습니다. 이러한 상황에서 중복키가 존재하는 데이터의 삽입을 처리하는 방법을 정리합니다.</summary></entry><entry><title type="html">2021.10.20-개발일지</title><link href="http://localhost:4000/dev_log/mock-server" rel="alternate" type="text/html" title="2021.10.20-개발일지" /><published>2021-10-20T00:00:00+09:00</published><updated>2021-10-20T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/mock-server</id><content type="html" xml:base="http://localhost:4000/dev_log/mock-server">&lt;p&gt;spring에서 외부에서 제공하는 api를 테스트 하고 싶었습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;webclient&lt;/code&gt;를 이용하는데 service코드를 직접 호출하여 결과를 확인 할 수도 있었지만, 호출 전 또는 외부 서버의 상황에 구애받지 않고 테스트 하고 싶었습니다. 공식 문서와 구글링 결과 많이 사용하는 프레임워크로는 &lt;a href=&quot;https://www.mock-server.com/&quot;&gt;mockserver-netty&lt;/a&gt; 또는 &lt;a href=&quot;https://github.com/square/okhttp/tree/master/mockwebserver&quot;&gt;okhttp-mock&lt;/a&gt;등이 존재합니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;개발환경&quot;&gt;개발환경&lt;/h2&gt;
 &lt;p&gt;2가지 방식의 예제를 살펴보기전에 외부 api서버를 호출하는 service코드 및 http response를 정의합니다.&lt;/p&gt;
@@ -170,7 +260,7 @@
   &lt;li&gt;(3): request에 대한 response값을 설정합니다. 이때 okhttp와는 다르게 반드시 path가 일치해야 성공합니다.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;개인적으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;netty-mockserver&lt;/code&gt;가 가독성이 더 좋아서 선호합니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">mockserver로 외부 api 테스트하기</summary></entry><entry><title type="html">2021.10.18-개발일지</title><link href="http://localhost:4000/dev_log/kotlin-noargs/" rel="alternate" type="text/html" title="2021.10.18-개발일지" /><published>2021-10-18T00:00:00+09:00</published><updated>2021-10-18T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/kotlin-noargs</id><content type="html" xml:base="http://localhost:4000/dev_log/kotlin-noargs/">&lt;p&gt;kotlin 에서 reflection 사용시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.lang.NoSuchMethodException&lt;/code&gt; 에러 메시지가 발생했습니다. 해당 코드는 기본생성자가 없어 발생한 문제였습니다. reflection의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;newInstance&lt;/code&gt; 메서드를 확인해보면 클래스의 정보를 가져오면서 이때 선언된 생성자들을 통해 객체를 만들게 되어 있습니다.&lt;/p&gt;
+&lt;p&gt;개인적으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;netty-mockserver&lt;/code&gt;가 가독성이 더 좋아서 선호합니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">mockserver로 외부 api 테스트하기</summary></entry><entry><title type="html">2021.10.18-개발일지</title><link href="http://localhost:4000/dev_log/kotlin-noargs" rel="alternate" type="text/html" title="2021.10.18-개발일지" /><published>2021-10-18T00:00:00+09:00</published><updated>2021-10-18T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/kotlin-noargs</id><content type="html" xml:base="http://localhost:4000/dev_log/kotlin-noargs">&lt;p&gt;kotlin 에서 reflection 사용시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.lang.NoSuchMethodException&lt;/code&gt; 에러 메시지가 발생했습니다. 해당 코드는 기본생성자가 없어 발생한 문제였습니다. reflection의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;newInstance&lt;/code&gt; 메서드를 확인해보면 클래스의 정보를 가져오면서 이때 선언된 생성자들을 통해 객체를 만들게 되어 있습니다.&lt;/p&gt;
 
 &lt;h6 id=&quot;classjava&quot;&gt;Class.java&lt;/h6&gt;
 &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Constructor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getConstructor0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;?&amp;gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parameterTypes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
@@ -225,7 +315,7 @@
 &lt;span class=&quot;k&quot;&gt;annotation&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;NoArg&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;결과 추가적인 코드의 변경없이 reflection을 사용할 수 있습니다. 또한 해당 코드는 런타임시에 작동하므로 개발자가 직접 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Person()&lt;/code&gt; 과 같이 빈 생성자로 객체를 생성할 수 없다는 장점이 있습니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">kotlin 에서 기본 생성자 사용하기</summary></entry><entry><title type="html">Spring file upload</title><link href="http://localhost:4000/spring/spring-file-upload/" rel="alternate" type="text/html" title="Spring file upload" /><published>2021-08-26T00:00:00+09:00</published><updated>2021-08-26T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-file-upload</id><content type="html" xml:base="http://localhost:4000/spring/spring-file-upload/">&lt;p&gt;http 통신으로 이미지등의 파일을 전송할때는 일반적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;multipart-form/data&lt;/code&gt; 를 통해 전달합니다.&lt;/p&gt;
+&lt;p&gt;결과 추가적인 코드의 변경없이 reflection을 사용할 수 있습니다. 또한 해당 코드는 런타임시에 작동하므로 개발자가 직접 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Person()&lt;/code&gt; 과 같이 빈 생성자로 객체를 생성할 수 없다는 장점이 있습니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">kotlin 에서 기본 생성자 사용하기</summary></entry><entry><title type="html">Spring file upload</title><link href="http://localhost:4000/spring/spring-file-upload" rel="alternate" type="text/html" title="Spring file upload" /><published>2021-08-26T00:00:00+09:00</published><updated>2021-08-26T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-file-upload</id><content type="html" xml:base="http://localhost:4000/spring/spring-file-upload">&lt;p&gt;http 통신으로 이미지등의 파일을 전송할때는 일반적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;multipart-form/data&lt;/code&gt; 를 통해 전달합니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;multipart-formdata-처리하기&quot;&gt;multipart-form/data 처리하기&lt;/h2&gt;
 
@@ -391,7 +481,7 @@ hahava
   &lt;span class=&quot;nc&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getOriginalFilename&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ResponseEntity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;noContent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">http 통신으로 이미지등의 파일을 전송할때는 일반적으로 multipart-form/data 를 통해 전달합니다.</summary></entry><entry><title type="html">2021.08.23-개발일지</title><link href="http://localhost:4000/dev_log/devlo-20210823g/" rel="alternate" type="text/html" title="2021.08.23-개발일지" /><published>2021-08-23T00:00:00+09:00</published><updated>2021-08-23T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/devlo-20210823g</id><content type="html" xml:base="http://localhost:4000/dev_log/devlo-20210823g/">&lt;p&gt;url 을 통해 filter 처리를 하는 로직에서 문제가 생긴적이 있습니다. 기본적으로 url parameter 라 표현하면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/website/example?param=1&lt;/code&gt; 와 같이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?param=1&lt;/code&gt; 형태를 생각할 것이라 생각합니다. 그러나 해당 용어는 정식으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query string&lt;/code&gt;이라 표현하며, url parameter는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/website/example;param=1&lt;/code&gt; 의 형태를 의미합니다.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">http 통신으로 이미지등의 파일을 전송할때는 일반적으로 multipart-form/data 를 통해 전달합니다.</summary></entry><entry><title type="html">2021.08.23-개발일지</title><link href="http://localhost:4000/dev_log/devlo-20210823g" rel="alternate" type="text/html" title="2021.08.23-개발일지" /><published>2021-08-23T00:00:00+09:00</published><updated>2021-08-23T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/devlo-20210823g</id><content type="html" xml:base="http://localhost:4000/dev_log/devlo-20210823g">&lt;p&gt;url 을 통해 filter 처리를 하는 로직에서 문제가 생긴적이 있습니다. 기본적으로 url parameter 라 표현하면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/website/example?param=1&lt;/code&gt; 와 같이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;?param=1&lt;/code&gt; 형태를 생각할 것이라 생각합니다. 그러나 해당 용어는 정식으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query string&lt;/code&gt;이라 표현하며, url parameter는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/website/example;param=1&lt;/code&gt; 의 형태를 의미합니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;&amp;lt;scheme&amp;gt;://&amp;lt;username&amp;gt;:&amp;lt;password&amp;gt;@&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;path&amp;gt;;&amp;lt;parameters&amp;gt;?&amp;lt;query&amp;gt;#&amp;lt;fragment&amp;gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -460,7 +550,7 @@ GET /website/example
 		&lt;span class=&quot;n&quot;&gt;chain&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;doFilter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
 	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">URL 파라미터 사용하지 않기</summary></entry><entry><title type="html">Spring exception</title><link href="http://localhost:4000/spring/spring-exception/" rel="alternate" type="text/html" title="Spring exception" /><published>2021-07-26T00:00:00+09:00</published><updated>2021-07-26T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-exception</id><content type="html" xml:base="http://localhost:4000/spring/spring-exception/">&lt;p&gt;spring 애플리케이션을 실행 후 예외 발생 시 경우에 따른 플로우 및 처리 방법을 정리합니다.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">URL 파라미터 사용하지 않기</summary></entry><entry><title type="html">Spring exception</title><link href="http://localhost:4000/spring/spring-exception" rel="alternate" type="text/html" title="Spring exception" /><published>2021-07-26T00:00:00+09:00</published><updated>2021-07-26T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-exception</id><content type="html" xml:base="http://localhost:4000/spring/spring-exception">&lt;p&gt;spring 애플리케이션을 실행 후 예외 발생 시 경우에 따른 플로우 및 처리 방법을 정리합니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;servlet-관점&quot;&gt;servlet 관점&lt;/h2&gt;
 
@@ -599,7 +689,7 @@ GET /website/example
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;예외를 처리할 클래스에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@ControllerAdvice&lt;/code&gt; 선언하면 작동합니다. 만약, 특정 controller또는 패키지등을 지정하려면 assignableTypes,basePackage 등으로 지정할 수 있습니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">spring 애플리케이션을 실행 후 예외 발생 시 경우에 따른 플로우 및 처리 방법을 정리합니다.</summary></entry><entry><title type="html">filter and interceptor</title><link href="http://localhost:4000/spring/filter-and-interceptor/" rel="alternate" type="text/html" title="filter and interceptor" /><published>2021-07-20T00:00:00+09:00</published><updated>2021-07-20T00:00:00+09:00</updated><id>http://localhost:4000/spring/filter-and-interceptor</id><content type="html" xml:base="http://localhost:4000/spring/filter-and-interceptor/">&lt;p&gt;filter와 interceptor는 둘 다 공통로직을 처리한다는 특징이 있습니다. 두 기술의 가장 큰 차이점으로는 관리 주체가 다르다는 점 입니다.&lt;/p&gt;
+&lt;p&gt;예외를 처리할 클래스에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@ControllerAdvice&lt;/code&gt; 선언하면 작동합니다. 만약, 특정 controller또는 패키지등을 지정하려면 assignableTypes,basePackage 등으로 지정할 수 있습니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">spring 애플리케이션을 실행 후 예외 발생 시 경우에 따른 플로우 및 처리 방법을 정리합니다.</summary></entry><entry><title type="html">filter and interceptor</title><link href="http://localhost:4000/spring/filter-and-interceptor" rel="alternate" type="text/html" title="filter and interceptor" /><published>2021-07-20T00:00:00+09:00</published><updated>2021-07-20T00:00:00+09:00</updated><id>http://localhost:4000/spring/filter-and-interceptor</id><content type="html" xml:base="http://localhost:4000/spring/filter-and-interceptor">&lt;p&gt;filter와 interceptor는 둘 다 공통로직을 처리한다는 특징이 있습니다. 두 기술의 가장 큰 차이점으로는 관리 주체가 다르다는 점 입니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/img/http-request-flow.png&quot; /&gt;&lt;/p&gt;
 
@@ -687,26 +777,7 @@ GET /website/example
   &lt;li&gt;예외를 어디서 어떻게 처리해야 하나 ?? (filter -&amp;gt; servlet , interceptor -&amp;gt; spring)&lt;/li&gt;
   &lt;li&gt;전역적으로 관리가 필요한가 ?? -&amp;gt; filter&lt;/li&gt;
   &lt;li&gt;요청 전후의 작업이 필요한가 ?? -&amp;gt; interceptor&lt;/li&gt;
-&lt;/ol&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">filter와 interceptor는 둘 다 공통로직을 처리한다는 특징이 있습니다. 두 기술의 가장 큰 차이점으로는 관리 주체가 다르다는 점 입니다.</summary></entry><entry><title type="html">2021.07.13-리스트를 배열로 바꾸기</title><link href="http://localhost:4000/dev_log/List-to-array/" rel="alternate" type="text/html" title="2021.07.13-리스트를 배열로 바꾸기" /><published>2021-07-13T00:00:00+09:00</published><updated>2021-07-13T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/List-to-array</id><content type="html" xml:base="http://localhost:4000/dev_log/List-to-array/">&lt;p&gt;java 에서 리스트를 배열로 또는 배열을 리스트로 변경하는 방법&lt;/p&gt;
-
-&lt;h3 id=&quot;list-to-array&quot;&gt;List to Array&lt;/h3&gt;
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;c&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stringArr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toArray&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]);&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// String[] stringArr = alphabet.stream().toArray();&lt;/span&gt;
-
-&lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numberArr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toArray&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]);&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// int numberArr[] = numbers.stream().mapToInt(i -&amp;gt; i).toArray(); &lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;array-to-list&quot;&gt;Array to list&lt;/h3&gt;
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stringArr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;c&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;asList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stringArr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;//List&amp;lt;String&amp;gt; alphabet =  Arrays.stream(stringArr).collect(Collectors.toList());&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;intArr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;intArr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;boxed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;collect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Collectors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">java 에서 리스트를 배열로 또는 배열을 리스트로 변경하는 방법</summary></entry><entry><title type="html">Spring converter</title><link href="http://localhost:4000/spring/spring-type-converter/" rel="alternate" type="text/html" title="Spring converter" /><published>2021-07-13T00:00:00+09:00</published><updated>2021-07-13T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-type-converter</id><content type="html" xml:base="http://localhost:4000/spring/spring-type-converter/">&lt;p&gt;spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다.&lt;/p&gt;
+&lt;/ol&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">filter와 interceptor는 둘 다 공통로직을 처리한다는 특징이 있습니다. 두 기술의 가장 큰 차이점으로는 관리 주체가 다르다는 점 입니다.</summary></entry><entry><title type="html">Spring converter</title><link href="http://localhost:4000/spring/spring-type-converter" rel="alternate" type="text/html" title="Spring converter" /><published>2021-07-13T00:00:00+09:00</published><updated>2021-07-13T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-type-converter</id><content type="html" xml:base="http://localhost:4000/spring/spring-type-converter">&lt;p&gt;spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ResponseEntity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Void&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;stringToInteger&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@RequestParam&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
@@ -765,7 +836,26 @@ GET /website/example
 		&lt;span class=&quot;n&quot;&gt;registry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;addConverter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;StringToCoordinatesConverter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
 	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다.</summary></entry><entry><title type="html">Servlet and Spring</title><link href="http://localhost:4000/spring/spring-and-servlet/" rel="alternate" type="text/html" title="Servlet and Spring" /><published>2021-07-10T00:00:00+09:00</published><updated>2021-07-10T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-and-servlet</id><content type="html" xml:base="http://localhost:4000/spring/spring-and-servlet/">&lt;h3 id=&quot;servlet-과-spring&quot;&gt;Servlet 과 Spring&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">spring 에서 개발시 controller에 맵핑된 query 또는 url-path 가 자료형에 구애받지 않는 것으로 보입니다.</summary></entry><entry><title type="html">2021.07.13-리스트를 배열로 바꾸기</title><link href="http://localhost:4000/dev_log/List-to-array" rel="alternate" type="text/html" title="2021.07.13-리스트를 배열로 바꾸기" /><published>2021-07-13T00:00:00+09:00</published><updated>2021-07-13T00:00:00+09:00</updated><id>http://localhost:4000/dev_log/List-to-array</id><content type="html" xml:base="http://localhost:4000/dev_log/List-to-array">&lt;p&gt;java 에서 리스트를 배열로 또는 배열을 리스트로 변경하는 방법&lt;/p&gt;
+
+&lt;h3 id=&quot;list-to-array&quot;&gt;List to Array&lt;/h3&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;c&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stringArr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toArray&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// String[] stringArr = alphabet.stream().toArray();&lt;/span&gt;
+
+&lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numberArr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toArray&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// int numberArr[] = numbers.stream().mapToInt(i -&amp;gt; i).toArray(); &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;array-to-list&quot;&gt;Array to list&lt;/h3&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stringArr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;c&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alphabet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;asList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stringArr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//List&amp;lt;String&amp;gt; alphabet =  Arrays.stream(stringArr).collect(Collectors.toList());&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;intArr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Integer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;intArr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;boxed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;collect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Collectors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">java 에서 리스트를 배열로 또는 배열을 리스트로 변경하는 방법</summary></entry><entry><title type="html">Servlet and Spring</title><link href="http://localhost:4000/spring/spring-and-servlet" rel="alternate" type="text/html" title="Servlet and Spring" /><published>2021-07-10T00:00:00+09:00</published><updated>2021-07-10T00:00:00+09:00</updated><id>http://localhost:4000/spring/spring-and-servlet</id><content type="html" xml:base="http://localhost:4000/spring/spring-and-servlet">&lt;h3 id=&quot;servlet-과-spring&quot;&gt;Servlet 과 Spring&lt;/h3&gt;
 
 &lt;p&gt;Spring 에서 http request의 흐름은 아래와 같은 형태로 진행됩니다. Container에서 http request가 들어오면 각각의 단계 별로 메서드를 호출합니다.&lt;/p&gt;
 
@@ -844,132 +934,4 @@ GET /website/example
 
 &lt;h3 id=&quot;servlet-context&quot;&gt;Servlet context&lt;/h3&gt;
 
-&lt;p&gt;servlet은 요청에 대해 쓰레드로 실행됩니다. 따라서 servlet 은 서로 정보를 교환할 수 없기에, servlet context을 통해야 합니다. servlet context에는 dispatcher servlet, filter 등을 등록합니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">Servlet 과 Spring</summary></entry><entry><title type="html">03-http status code</title><link href="http://localhost:4000/http/http-status/" rel="alternate" type="text/html" title="03-http status code" /><published>2021-07-05T00:00:00+09:00</published><updated>2021-07-05T00:00:00+09:00</updated><id>http://localhost:4000/http/http-status</id><content type="html" xml:base="http://localhost:4000/http/http-status/">&lt;p&gt;Http 응답 메시지의 상태코드는 크게 다섯가지로 나뉩니다. 상태코드는 세자리 숫자로 100~599 번 까지 정해져 있으며 각각의 의미가 존재합니다. 자주 사용되는 코드 및 설명은 아래와 같습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;100-information-response&quot;&gt;100 information response&lt;/h2&gt;
-
-&lt;p&gt;정보성 상태코드로 초기에는 존재하지 않았으나, http/1.1 에서 도입되었습니다. 요청이 정상적으로 수신되었음을 의미하며 프로세스를 계속해서 진행하도록 합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;100-continue&quot;&gt;100-Continue&lt;/h4&gt;
-&lt;p&gt;요청의 시작 부분 일부가 받아들여졌으며, 클라이언트는 나머지를 계속 이어서 보내야 함을 의미합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;101--switching-protocol&quot;&gt;101- Switching protocol&lt;/h4&gt;
-&lt;p&gt;서버가 프로토콜을 변경했음을 의미합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;101&lt;/code&gt;번의 경우 websocket 통신시 사용되는 경우가 있습니다. 일반적으로 websocket통신시 최초 커넥션을 맺을때 http로 통신하고 연결된 후 websocket으로 변경하게 됩니다. 이때 메시지를 교환하면서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;101&lt;/code&gt;으로 응답받는 것을 확인할 수 있습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;200-299-success&quot;&gt;200-299 success&lt;/h2&gt;
-
-&lt;p&gt;클라이언트가 보낸 요청이 정상적으로 수신 및 처리되었음을 의미합니다. 요청 메서드 또는 파리미터별 응답코드가 일부 다르게 표현될 수 있습니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;200-ok&quot;&gt;200-OK&lt;/h4&gt;
-&lt;p&gt;요청이 정상적으로 처리됨을 의미합니다. 가장 일반적인 형태로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;204&lt;/code&gt;코드와는 달리 엔터티 본문은 요청된 리소스를 포함합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;201-created&quot;&gt;201-Created&lt;/h4&gt;
-&lt;p&gt;서버에 객체가 정상적으로 생성되었음을 의미함니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;202-accepted&quot;&gt;202-Accepted&lt;/h4&gt;
-&lt;p&gt;클라이언트의 요청이 정상적으로 수신 되었지만, 처리가 완료되지 않았을 의미합니다. 배치 작업등을 표현하기 위해 만들어졌으며 비동기 작업일때 표현하기 용이합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;204-no-content&quot;&gt;204-No content&lt;/h4&gt;
-&lt;p&gt;헤더와 상태줄을 포함하지만 엔터니 본문은 포함하지 않습니다. Rest API에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;post&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;put&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;delete&lt;/code&gt; 등의 메서드가 성공시 해당 코드를 내려주는게 적절한 응답이 될 수 있습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;300-399-redirection&quot;&gt;300-399 Redirection&lt;/h2&gt;
-&lt;p&gt;리다이렉션 상태코드는 클라이언트 요청에 대해 다른 URL을 호출하도록 지시합니다. 때때로 구글과 같은 검색 엔진의 봇들은 3xx 번대 코드를 해석하여 페이지 정보를 갱신하기도 합니다. SEO 관점에서도 3xx번대 코드를 잘 사용하는것은 중요합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;301-moved-permanently&quot;&gt;301-Moved Permanently&lt;/h4&gt;
-&lt;p&gt;요청된 리소스가 영구적으로 이동되었음을 의미합니다. 변경된 URL을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Location&lt;/code&gt;헤더에 표기합니다. https 프로토콜을 사용하는 서버의 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;80&lt;/code&gt; 포트롤 접속한 http 요청을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;443&lt;/code&gt;으로 리다이렉트 할때 사용하기도 합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;서버응답 예시&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;301&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;Moved Permanently&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;http://hahava.github.io&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;302-found&quot;&gt;302-Found&lt;/h4&gt;
-&lt;p&gt;요청된 리소스가 임시적으로 이동되었음을 의미합니다. 변경된 URL을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Location&lt;/code&gt;헤더에 표기합니다. 이후에는 원래 URL을 사용해야 합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;304-not-modified&quot;&gt;304-Not modified&lt;/h4&gt;
-&lt;p&gt;서버는 클라이언트가 요청한 리소스가 이전 요청과 비교하여 전혀 변경되지 않았음을 의미합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;304&lt;/code&gt;로 응답받은 클라이언트는 기존에 캐싱된 엔터티를 사용할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;클라이언트가 최초 응답시 서버는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;etag&lt;/code&gt;를 헤더에 삽입합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;etag&lt;/code&gt;는 리소스 변경 여부를 확인하는 역할을 답당하며 해시 값으로 되어있습니다. 이후 클라이언트는 해당 값을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;If-Modified-Since&lt;/code&gt; 또는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;If-None-Match&lt;/code&gt; 를 헤더에 삽입하여 변경 여부를 확인합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;최초 요청&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/hahava&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;최초 응답&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;Ok&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Content-Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;ETag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;abcdefg&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;이후 요청&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;GET&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;/hahava&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Accept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;text/html&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;If-None-Match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;abcdefg&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;캐싱되어 있는 경우 응답&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;304&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;Not Modified&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;ETag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;abcdefg&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;307-temporary-redirect&quot;&gt;307 Temporary Redirect&lt;/h3&gt;
-&lt;p&gt;리소스가 임시적으로 변경되었음을 의미하며, 헤더에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;location&lt;/code&gt; 으로 표현합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;308-permanent-redirect&quot;&gt;308 Permanent Redirect&lt;/h3&gt;
-&lt;p&gt;리소스가 영구적으로 변경되었음을 의미하며, 헤더에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;location&lt;/code&gt; 으로 표현합니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;301&lt;/code&gt;과 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;302&lt;/code&gt;를 처음 계획했을때 URL 변경 여부를 확인하기 위해 만들어졌습니다. 따라서 모든 요청에 대한 method는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GET&lt;/code&gt; 로 변경해서 요청하게 됩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;post&lt;/code&gt; 등 다른 메서드를 사용하기 위해서는 반드시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;307&lt;/code&gt; 또는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;308&lt;/code&gt; 상태코드를 사용합니다.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;400-499-client-errors&quot;&gt;400-499 client errors&lt;/h2&gt;
-&lt;p&gt;클라이언트가 서버에 요청시 서버는 요청을 수신했으나 정상적인 요청이 아닐 경우를 의미합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;400-bad-request&quot;&gt;400-Bad Request&lt;/h3&gt;
-&lt;p&gt;클라이언트의 잘못된 요청 또는 문법등으로 인해 발생합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;401-unauthorized&quot;&gt;401-Unauthorized&lt;/h3&gt;
-&lt;p&gt;클라이언트가 리소스를 요청시 인증되지 않았음을 의미합니다. 해당 코드 반환시 헤더에 인증값을 추가하여 요청해야 합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;403-forbidden&quot;&gt;403-Forbidden&lt;/h3&gt;
-&lt;p&gt;요청이 서버에 의해 거부되었음을 의미합니다. 주로 거절의 이유를 숨기고 싶을때 사용합니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;401&lt;/code&gt;과 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;403&lt;/code&gt;은 인증과 관련된 부분에서 비슷하게 사용될 수 있습니다. 가장 큰 차이점으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;401&lt;/code&gt;의 경우 인증자체가 안된경우를 표현할 수 있으며, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;403&lt;/code&gt;의 경우 인증 관련 값은 존재하나 해당 인증에 대한 접근 권한이 없는 경우를 표현할 수 있습니다.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;404-not-found&quot;&gt;404-Not Found&lt;/h3&gt;
-&lt;p&gt;클라이언트가 요청한 URL을 찾을 수 없는 경우를 의미합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;405-method-not-allowed&quot;&gt;405-Method Not Allowed&lt;/h3&gt;
-&lt;p&gt;클라이언트가 요청한 URL에서 해당 메서드를 지원하지 않을 경우를 의미합니다. 해당 코드로 응답을 반환시 헤더에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Allow&lt;/code&gt;으로 지원하는 메서드를 표현합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Google post 요청시&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;POST&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;google.com&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;반환 내용&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;405&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;Method Not Allowed&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;...&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Allow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;GET, HEAD&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;500-599-server-error&quot;&gt;500-599 Server Error&lt;/h2&gt;
-&lt;p&gt;클라이언트가 정상적인 요청을 보냈음에도 때떄로 서버 자체의 문제로 요청을 처리하지 못하는 경우가 발생하기도 합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;500-internal-server-error&quot;&gt;500-Internal Server Error&lt;/h4&gt;
-&lt;p&gt;서버가 요청을 처리할 수 없게 만드는 에러를 만났을 때 사용합니다. 일반적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WAS(Web Application Server)&lt;/code&gt;를 사용할경우 내부에서 발생하는 에러는 대부분 500으로 표현됩니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;501-not-implemented&quot;&gt;501-Not Implemented&lt;/h4&gt;
-&lt;p&gt;서버가 지원하지 않는 기능이나 아직 구현되지 않는 기능을 요청할 때를 의미합니다. 만약, 차후 지원 예정이라면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Retry-After&lt;/code&gt;를 헤더에 추가하여 날짜 또는 초를 표현합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-http highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.1&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;501&lt;/span&gt; &lt;span class=&quot;ne&quot;&gt;Not Implemented&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Retry-After&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Wed, 21 Oct 2015 07:28:00 GMT&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;Retry-After&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;120&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;503-service-unavailable&quot;&gt;503-Service Unavailable&lt;/h4&gt;
-&lt;p&gt;서버가 요청을 처리할 준비가되지 않았음을 의미합니다. 일반적으로 서버가 다운됐거나 과부하 상태인 경우입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;503&lt;/code&gt; 을 반환할 경우 해당 응답이 캐시되지 않도록 주의해야 합니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">Http 응답 메시지의 상태코드는 크게 다섯가지로 나뉩니다. 상태코드는 세자리 숫자로 100~599 번 까지 정해져 있으며 각각의 의미가 존재합니다. 자주 사용되는 코드 및 설명은 아래와 같습니다.</summary></entry></feed>
+&lt;p&gt;servlet은 요청에 대해 쓰레드로 실행됩니다. 따라서 servlet 은 서로 정보를 교환할 수 없기에, servlet context을 통해야 합니다. servlet context에는 dispatcher servlet, filter 등을 등록합니다.&lt;/p&gt;</content><author><name>hahava</name><email>hahava5696@gmail.com</email></author><summary type="html">Servlet 과 Spring</summary></entry></feed>
