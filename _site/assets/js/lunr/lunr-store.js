@@ -154,4 +154,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/database/mysql-duplicated-insert-strategy",
         "teaser": null
+      },{
+        "title": "2022.01.11-개발일지",
+        "excerpt":"최근 HttpServletRequest 객체의 body를 controller진입 이후 참조할 상황이 생겼습니다. 이와 관련하여 발생했던 문제점들을 간단하게 정리합니다. HttpServletRequest 참조하기 spring에서 HttpServletRequest객체를 참조하는 방법은 크게 2가지가 있습니다. HttpServletRequest httpServletRequest = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest() RequestContextHolder를 통해 ThreadLocal로 저장된 HttpServletRequest 객체를 참조할 수 있습니다. @Autowired HttpServletRequest httpServletRequest @Autowired는 RquestScope로 정의된 bean을 참조할 수 있습니다. Http body 참조하기...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/HttpServletRequest-body-%EC%A1%B0%EC%9E%91%ED%95%98%EA%B8%B0-20220111",
+        "teaser": null
       }]
