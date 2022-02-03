@@ -160,4 +160,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/dev_log/HttpServletRequest-body-%EC%A1%B0%EC%9E%91%ED%95%98%EA%B8%B0-20220111",
         "teaser": null
+      },{
+        "title": "2022.02.03-개발일지",
+        "excerpt":"회사 업무중 jenkins에서 빌드시 test 커버리지를 채우지 못하면 실패하도록 프로젝트를 구성하려 했습니다. 그러나 보안 이슈로 jenkins 내부와 데이터베이스간의 통신이 불가능하여 bean 생성이 정상적으로 되지 않았습니다. 이에 테스트틀 전부 mock으로 변경하였으나, @Value를 사용하지 못하게 되었습니다. 문제를 해결하기 위해 해당 resource를 spring이 아닌 코드상에서 직접 호출하는 방법으로 결정했고 해당 내용을 정리합니다. Resource...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/properties%EB%A1%9C%EB%94%A9%ED%95%98%EA%B8%B0-20220203",
+        "teaser": null
       }]
