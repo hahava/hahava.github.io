@@ -166,4 +166,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/dev_log/properties%EB%A1%9C%EB%94%A9%ED%95%98%EA%B8%B0-20220203",
         "teaser": null
+      },{
+        "title": "nginx 캐시 설정하기",
+        "excerpt":"회사 업무중 서비스의 성능 향상을 위해 무엇을 할 수 있을까 고민하다, 현 아키텍쳐상 nginx 설정을 변경해보기로 결정 했습니다. Archtecture 서비스의 기본 구성형태는 위와 같습니다. 브라우저에서 resource 또는 http를 요청하면 nginx 에서 proxy_pass를 통해 WAS로 요청을 보내게 됩니다. 서버에선 view resolver 를 통해 렌더링 하는 방식이 아니라 react를 사용하여 static resource...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/nginx_%EC%BA%90%EC%8B%9C_%EC%84%A4%EC%A0%95-20220214",
+        "teaser": null
       }]
