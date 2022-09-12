@@ -1,6 +1,5 @@
 ---
 title: "Health check"
-excerpt: "web server application health check"
 
 categories:
  - dev_log

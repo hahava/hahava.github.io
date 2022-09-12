@@ -1,6 +1,5 @@
 ---
-title: "2022.06.11-개발일지"
-excerpt: "spring batch execution context 예외 처리하기"
+title: "spring batch execution context 예외 처리하기"
 
 categories:
  - dev_log
@@ -13,7 +12,7 @@ Failed to serialize object of type: class org.springframework.batch.item.Executi
 
 ## Execution Context
 배치 처리는 job 혹은 step별 상태를 가지고 있어야 합니다. 저장된 상태를 통해 commit등의 transaction처리를 하게 됩니다. 
-다행인점은 사용자가 직접 처리하는 것이 아니라 spring이 알아서 자동화 해준다는 점 입니다. `Executioncontext`가 그 역할을 처리하며 내부적으로 key, value 형태로 되어 있습니다. `ExecutionContext`는 단순히 spring 내부에서 그 과정을 제어하는 수준을 넘어서 global하게 영역별 데이터를 사용자가 직접 공유도 할 수 있도록 도와줍니다. 하기 코드는 tasklet에서 `Executioncontext`에 접근하는 예제입니다.
+다행인 점은 사용자가 직접 처리하는 것이 아니라 spring이 알아서 자동화해준다는 점 입니다. `Executioncontext`가 그 역할을 처리하며 내부적으로 key, value 형태로 되어 있습니다. `ExecutionContext`는 단순히 spring 내부에서 그 과정을 제어하는 수준을 넘어서 global하게 영역별 데이터를 사용자가 직접 공유도 할 수 있도록 도와줍니다. 하기 코드는 tasklet에서 `Executioncontext`에 접근하는 예제입니다.
 
 ```kotlin
 data class Person(
@@ -30,7 +29,7 @@ class FirstTasklet : Tasklet {
 }
 ```
 
-언급한바와 같이 `Executioncontext`는 내부가 ConcurrentHashmap으로 구현되어 있기에 `get`메서드를 호출하여 데이터를 안전하게 가져올 수 있습니다.
+언급한 바와 같이 `Executioncontext`는 내부가 ConcurrentHashmap으로 구현되어 있기에 `get`메서드를 호출하여 데이터를 안전하게 가져올 수 있습니다.
 
 ```kotlin
 class SecondTasklet : Tasklet {
@@ -43,13 +42,13 @@ class SecondTasklet : Tasklet {
 }
 ```
 
-그러나 회사에서 작업할떄는 예외가 발생하였습니다. 
+그러나 회사에서 작업할 때는 예외가 발생하였습니다. 
 ```
 Failed to serialize object of type: class org.springframework.batch.item.ExecutionContext
 ```
 
 ## DefaultBatchConfigurer 
-`@EnableBatchProcessing`을 통해 간편하게 batch를 사용할 수 있습니다. 내부적으로 `DefaultBatchConfigurer` 사용하며 서비스나 경우에 맞춰 특정 설정등을 override하여 구현합니다. 일부 시스템에선 데이터베이스를 지정하지 않고 batch를 작업하기 위해 아래와 같이 `setDatasource`를 override하여 공백으로 지정합니다.
+`@EnableBatchProcessing`을 통해 간편하게 batch를 사용할 수 있습니다. 내부적으로 `DefaultBatchConfigurer`사용하며 서비스나 경우에 맞춰 특정 설정 등을 override하여 구현합니다. 일부 시스템에선 데이터베이스를 지정하지 않고 batch를 작업하기 위해 아래와 같이 `setDatasource`를 override하여 공백으로 지정합니다.
 
 ```kotlin
 @SpringBootApplication
@@ -61,7 +60,7 @@ class DemoApplication : DefaultBatchConfigurer() {
 }
 ```
 
-문제는 datasource를 null로 처리했을 경우 `initialize`에서 기대하는 동작이 일부 달라진다는 점 입니다.
+문제는 datasource를 null로 처리했을 경우 `initialize`에서 기대하는 동작이 일부 달라진다는 점입니다.
 
 ```java
 @PostConstruct
@@ -94,7 +93,7 @@ public void initialize() {
 }
 ```
 
-(2)와 같이 호출되면 `JobExplorerFactoryBean`가 생성되고 내부에 `ExecutionContextSerializer` 구현되어 있어 추가적이 작업을 하지 않아도 되지만, (1)과 같이 호출되면 `MapJobExecutionDao` 생성되고 `org.springframework.util`패키지의 `SerializationUtils`호출 합니다. `SerializationUtils`은 `Serializable`을 사용하기 때문에 `Serializable`구현하지 않은 클래스에선 예외가 발생했던 것 입니다. 따라서 기본 타입이 아닌 클래스 타입에선 반드시 `Serializable` 구현해야 정상적으로 context을 사용할 수 있습니다. 
+(2)와 같이 호출되면 `JobExplorerFactoryBean`가 생성되고 내부에 `ExecutionContextSerializer` 구현되어 있어 추가적이 작업을 하지 않아도 되지만, (1)과 같이 호출되면 `MapJobExecutionDao` 생성되고 `org.springframework.util`패키지의 `SerializationUtils`호출 합니다. `SerializationUtils`은 `Serializable`을 사용하기 때문에 `Serializable`구현하지 않은 클래스에선 예외가 발생했던 것입니다. 따라서 기본 타입이 아닌 클래스 타입에선 반드시 `Serializable` 구현해야 정상적으로 context을 사용할 수 있습니다. 
 
 
 **full code**

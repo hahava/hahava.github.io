@@ -185,8 +185,8 @@ var store = [{
         "url": "http://localhost:4000/dev_log/devlog-distributed-key",
         "teaser": null
       },{
-        "title": "2022.06.11-개발일지",
-        "excerpt":"업무 중 batch job을 작성하다 아래와 같은 메시지가 발생하였고 이것을 해결한 내용 및 원리를 정리합니다. Failed to serialize object of type: class org.springframework.batch.item.ExecutionContext Execution Context 배치 처리는 job 혹은 step별 상태를 가지고 있어야 합니다. 저장된 상태를 통해 commit등의 transaction처리를 하게 됩니다. 다행인점은 사용자가 직접 처리하는 것이 아니라 spring이 알아서 자동화...","categories": ["dev_log"],
+        "title": "spring batch execution context 예외 처리하기",
+        "excerpt":"업무 중 batch job을 작성하다 아래와 같은 메시지가 발생하였고 이것을 해결한 내용 및 원리를 정리합니다. Failed to serialize object of type: class org.springframework.batch.item.ExecutionContext Execution Context 배치 처리는 job 혹은 step별 상태를 가지고 있어야 합니다. 저장된 상태를 통해 commit등의 transaction처리를 하게 됩니다. 다행인 점은 사용자가 직접 처리하는 것이 아니라 spring이 알아서...","categories": ["dev_log"],
         "tags": [],
         "url": "http://localhost:4000/dev_log/devlog-spring-batch-execution-context-exception",
         "teaser": null
