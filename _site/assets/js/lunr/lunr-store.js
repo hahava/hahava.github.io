@@ -196,4 +196,10 @@ var store = [{
         "tags": [],
         "url": "http://localhost:4000/dev_log/healthcheck",
         "teaser": null
+      },{
+        "title": "Elasticsearch popular keyword",
+        "excerpt":"Elasticsearch 에서 인기검색어를 구현하는 내용을 정리합니다. Aggregation Elasticsearch에선 Aggregation 즉 집계 관련 기능을 자체적으로 제공합니다. aggregation에는 metric, bucket등이 존재하며 이것들을 확장하여 sub, pipeline 형태 등으로 사용합니다. Request { \"query\": { \"constant_score\": { \"filter\": { \"match\": { \"type\": \"hat\" } } } }, \"aggs\": { \"hat_prices\": { \"sum\": { \"field\": \"price\"...","categories": ["dev_log"],
+        "tags": [],
+        "url": "http://localhost:4000/dev_log/elasticsearch-popular-keyword",
+        "teaser": null
       }]
