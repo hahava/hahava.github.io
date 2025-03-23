@@ -89,7 +89,7 @@ GEM
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)
     strscan (3.1.0)
-    webrick (1.7.0)
+    webrick (1.8.2)
 
 PLATFORMS
   ruby
@@ -98,7 +98,7 @@ DEPENDENCIES
   jekyll (~> 3.5)
   kramdown-parser-gfm
   minimal-mistakes-jekyll!
-  webrick (~> 1.7)
+  webrick (~> 1.8)
 
 BUNDLED WITH
    2.3.6
