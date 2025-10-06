@@ -84,6 +84,9 @@ fun main(args: Array<String>) {
 
 redis [공식문서](https://redis.io/glossary/redis-queue/)를 살펴보면 내부적으로 자체 queue 를 지원하고 있는것을 확인 할 수 있습니다. redisson은 이 queue를 이용해서 lock 의 획득과 반환 이벤트를 처리합니다.
 
+<img src="{{site.baseurl}}/assets/img/20250608/redis-pub.gif">
+
+
 ```bash
 # 현재 활성화 된 채널 
 redis-cli> PUBSUB CHANNELS
